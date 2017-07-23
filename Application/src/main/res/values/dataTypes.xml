@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dataTypes">
+        <item>Temperature</item>
+        <item>Pressure</item>
+        <item>Humidity</item>
+        <item>TempCombined</item>
+        <item>Temp+Humidity</item>
+    </string-array>
+
+</resources>

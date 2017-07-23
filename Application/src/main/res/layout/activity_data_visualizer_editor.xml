@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="top" >
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+
+            <TableRow android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+
+                <TextView
+                    android:layout_column="1"
+                    android:text="Timeseries Type"
+                    android:layout_width="0dp"
+                    android:layout_weight=".25"
+                    android:padding="3dip" />
+
+                <Spinner
+                    android:id="@+id/tsTypes"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"/>
+
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+            </TableRow>
+
+        </TableLayout>
+
+        <com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
+            android:id="@+id/rangeSeekbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"/>
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TableRow android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+
+                <TextView
+                    android:id="@+id/lowerDate"
+                    android:layout_column="1"
+                    android:text="min"
+                    android:layout_width="0dp"
+                    android:layout_weight=".25"
+                    android:padding="3dip" />
+
+                <TextView
+                    android:id="@+id/upperDate"
+                    android:text="max"
+                    android:gravity="right"
+                    android:layout_width="0dp"
+                    android:layout_weight=".25"
+                    android:padding="3dip" />
+
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+            </TableRow>
+        </TableLayout>
+
+        <Button
+            android:id="@+id/button_clear_data"
+            android:text="@string/button_show_graph"
+            android:textSize="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:onClick="showGraph" />
+
+    </LinearLayout>
+
+</LinearLayout>

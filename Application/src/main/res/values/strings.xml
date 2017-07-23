@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <!--  BluetoothChat -->
+    <string name="send">Send</string>
+    <string name="not_connected">You are not connected to a device</string>
+    <string name="empty_data">There is no timeseries data available</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving Bluetooth Chat.</string>
+    <string name="title_connecting">connecting...</string>
+    <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
+    <string name="title_not_connected">not connected</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">scanning for devices...</string>
+    <string name="select_device">select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
+    <!--  DataVisualizerActivity -->
+    <string name="data_visualizer">Data Visualizer</string>
+
+
+    <!-- Options Menu -->
+    <string name="connect">Connect a device</string>
+    <string name="discoverable">Make discoverable</string>
+    <string name="download_data">Download data</string>
+    <string name="update_data">Update data</string>
+    <string name="render_graph">Show graph</string>
+    <string name="data_analyzer">Show keyfigures</string>
+    <string name="db_util">Database inspector</string>
+
+    <!-- Buttons -->
+    <string name="button_update">Update Sensordata</string>
+    <string name="button_download">Download complete Sensordata</string>
+    <string name="button_show_visualizer">Show Data Visualizer</string>
+    <string name="button_show_analyzer">Show Data Analyzer</string>
+    <string name="button_clear_data">Delete Sensordata</string>
+    <string name="button_add_real_temp">Add real Temperature</string>
+    <string name="button_show_graph">Show Graph</string>
+
+    <string name="clear_data_warning">Do you want to clear the DB?</string>
+    <string name="update_data_warning">Do you want to update this Entry?</string>
+
+    <string name="update_data_success">Successfully updated!</string>
+    <string name="update_data_failure">Failed update!</string>
+
+    <string name="settings">Settings</string>
+
+</resources>

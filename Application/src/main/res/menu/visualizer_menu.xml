@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
+
+    <item
+        android:id="@+id/show_temperature"
+        app:showAsAction="never"
+        android:title="Show temperature"/>
+
+    <item
+        android:id="@+id/show_pressure"
+        app:showAsAction="never"
+        android:title="Show pressure"/>
+
+    <item
+        android:id="@+id/show_humidity"
+        app:showAsAction="never"
+        android:title="Show humidity"/>
+
+    <item
+        android:id="@+id/show_humidity_and_temp"
+        app:showAsAction="never"
+        android:title="Show combined"/>
+
+</menu>
