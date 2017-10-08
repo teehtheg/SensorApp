@@ -153,7 +153,7 @@ public class DatabaseService {
             String[] fields = line.split(",");
 
             try {
-                Date d = SimpleTs.tsFormat.parse(fields[0]);
+                Date d = SimpleTs.Companion.getTsFormat().parse(fields[0]);
                 Double h = Double.valueOf(fields[1]);
                 Double t = Double.valueOf(fields[2]);
                 Double p = Double.valueOf(fields[3]);

@@ -89,11 +89,11 @@ public class KlimasensorDbActivity extends BaseActivity {
         dbNumEntries.setText(String.valueOf(numEntries));
 
         if (oldestEntry != null) {
-            dbOldestEntry.setText(SimpleTs.tsFormat.format(oldestEntry.getTimestamp()));
+            dbOldestEntry.setText(SimpleTs.Companion.getTsFormat().format(oldestEntry.getTimestamp()));
         }
 
         if (latestEntry != null) {
-            dbLatestEntry.setText(SimpleTs.tsFormat.format(latestEntry.getTimestamp()));
+            dbLatestEntry.setText(SimpleTs.Companion.getTsFormat().format(latestEntry.getTimestamp()));
         }
 
         clearDataListener = new View.OnClickListener() {
@@ -154,7 +154,7 @@ public class KlimasensorDbActivity extends BaseActivity {
     private void showTsEntry(TsEntry entry) {
         shownEntry = entry;
 
-        tsEntryTimestamp.setText(SimpleTs.tsFormat.format(entry.getTimestamp()));
+        tsEntryTimestamp.setText(SimpleTs.Companion.getTsFormat().format(entry.getTimestamp()));
         tsEntryTemperature.setText(entry.getTemperature().toString());
         tsEntryRealTemperature.setText(entry.getRealTemperature() != null ? entry.getRealTemperature().toString() : "null");
         tsEntryPressure.setText(entry.getPressure().toString());
@@ -173,7 +173,7 @@ public class KlimasensorDbActivity extends BaseActivity {
             shownEntry.setPressure(Double.valueOf(press));
             shownEntry.setTemperature(Double.valueOf(temp));
             shownEntry.setRealTemperature("null".equals(realtemp) ? null : Double.valueOf(realtemp));
-            shownEntry.setTimestamp(SimpleTs.tsFormat.parse(ts));
+            shownEntry.setTimestamp(SimpleTs.Companion.getTsFormat().parse(ts));
         } catch (ParseException e) {
             Log.e(TAG, e.getLocalizedMessage());
         } catch (NumberFormatException e) {
@@ -208,7 +208,7 @@ public class KlimasensorDbActivity extends BaseActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progresValue, boolean fromUser) {
                 current = seekBarSteps.get(progresValue);
-                seekBarText.setText(SimpleTs.tsFormat.format(current.getTimestamp()));
+                seekBarText.setText(SimpleTs.Companion.getTsFormat().format(current.getTimestamp()));
             }
 
             @Override

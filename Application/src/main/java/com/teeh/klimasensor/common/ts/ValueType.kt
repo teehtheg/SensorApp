@@ -1,9 +1,9 @@
-package com.teeh.klimasensor.common.ts;
+package com.teeh.klimasensor.common.ts
 
 /**
  * Created by teeh on 16.07.2017.
  */
 
-public enum ValueType {
+enum class ValueType {
     TEMPERATURE, HUMIDITY, PRESSURE, REAL_TEMPERATURE
 }

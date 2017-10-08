@@ -27,7 +27,7 @@ public class DateUtils {
         if (date == null) {
             return "1970-01-01 00:00:00";
         } else {
-            return SimpleTs.tsFormat.format(date);
+            return SimpleTs.Companion.getTsFormat().format(date);
         }
     }
 }
