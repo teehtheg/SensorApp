@@ -1,13 +1,7 @@
 package com.teeh.klimasensor
 
-import android.app.Activity
-import android.graphics.Color
 import android.os.Bundle
-import android.renderscript.Sampler
-import android.support.design.widget.Snackbar
-import android.text.Editable
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -16,18 +10,11 @@ import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.ValueType
 
-import android.util.Log
-
 import java.text.NumberFormat
-import java.util.ArrayList
-import java.util.Arrays
 import java.util.HashMap
 import java.util.Locale
 
-import android.R.attr.duration
-import android.R.attr.id
-import android.R.id.input
-import android.media.CamcorderProfile.get
+import com.teeh.klimasensor.database.DatabaseService
 
 class DataAnalyzerActivity : BaseActivity() {
 
@@ -104,8 +91,7 @@ class DataAnalyzerActivity : BaseActivity() {
 
     public override fun onResume() {
         super.onResume()
-        sensorTs = TimeseriesService.getInstance().sensorTs
-
+        sensorTs = TimeseriesService.instance.sensorTs
         initializeKeyfigures()
 
         temperature_dev.text = nf.format(sensorTs.avgTempDeviation)
@@ -149,11 +135,11 @@ class DataAnalyzerActivity : BaseActivity() {
         val editable = realTempInput.text
         val input = editable.toString()
         var success = false
-        val entry = DatabaseService.getInstance().latestEntry
+        val entry = DatabaseService.instance.latestEntry
 
         if (input != null && entry != null) {
             val value = java.lang.Double.valueOf(input)
-            success = DatabaseService.getInstance().insertRealTemp(value, entry.id)
+            success = DatabaseService.instance.insertRealTemp(value, entry.id)
         }
 
         if (success) {

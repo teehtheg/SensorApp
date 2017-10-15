@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,8 +27,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.teeh.klimasensor.DatabaseService;
-import com.teeh.klimasensor.KlimasensorDbActivity;
+import com.teeh.klimasensor.database.DatabaseService;
+import com.teeh.klimasensor.DatabaseActivity;
 import com.teeh.klimasensor.R;
 import com.teeh.klimasensor.SettingsActivity;
 import com.teeh.klimasensor.TimeseriesService;
@@ -37,8 +36,6 @@ import com.teeh.klimasensor.common.Constants;
 import com.teeh.klimasensor.common.ts.ValueType;
 
 import java.util.List;
-
-import static android.R.attr.button;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -240,7 +237,7 @@ public class BluetoothSynchronizer extends Fragment {
             return;
         }
 
-        String latestTs = TimeseriesService.getInstance()
+        String latestTs = TimeseriesService.Companion.getInstance()
                 .getSensorTs()
                 .getTs(ValueType.TEMPERATURE)
                 .getLatestTimestampString();
@@ -376,7 +373,7 @@ public class BluetoothSynchronizer extends Fragment {
                     break;
                 case Constants.MESSAGE_FILE:
                     List<String> file = (List<String>) msg.obj;
-                    DatabaseService.getInstance().clearSensorData();
+                    DatabaseService.Companion.getInstance().clearSensorData();
                     writeTask = new WriteToDBTask();
                     writeTask.execute(file);
 
@@ -496,7 +493,7 @@ public class BluetoothSynchronizer extends Fragment {
                 return true;
             }
             case R.id.db_util: {
-                Intent serverIntent = new Intent(getActivity(), KlimasensorDbActivity.class);
+                Intent serverIntent = new Intent(getActivity(), DatabaseActivity.class);
                 startActivityForResult(serverIntent, REQUEST_SHOW_DBUTIL);
                 return true;
             }
@@ -513,7 +510,7 @@ public class BluetoothSynchronizer extends Fragment {
 
         protected Boolean doInBackground(List<String>... update) {
             for(List<String> elem : update) {
-                TimeseriesService.getInstance().writeToDB(elem);
+                TimeseriesService.Companion.getInstance().writeToDB(elem);
             }
             return true;
         }

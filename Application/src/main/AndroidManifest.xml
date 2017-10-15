@@ -61,7 +61,7 @@
            android:label="@string/settings" />
 
         <activity
-            android:name="com.teeh.klimasensor.KlimasensorDbActivity"
+            android:name="com.teeh.klimasensor.DatabaseActivity"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/db_util" />

@@ -5,19 +5,23 @@ import com.teeh.klimasensor.common.utils.CalcUtil
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Date
 import java.util.HashMap
 import java.util.Locale
 import java.util.stream.Collectors
+import java.time.format.DateTimeFormatter
+
+
 
 /**
  * Created by teeh on 16.07.2017.
  */
 
 class SimpleTs(val ts: List<SimpleEntry>) {
-    private val dateMap: MutableMap<Date, Int>
+    private val dateMap: MutableMap<LocalDateTime, Int>
 
     val valueList: List<Double?>
         get() = ts.map { x -> x.value }
@@ -47,7 +51,7 @@ class SimpleTs(val ts: List<SimpleEntry>) {
         get() {
             val ts = valueList
             val sum = CalcUtil.sum(ts)
-            return sum!! / ts.size
+            return sum / ts.size
         }
 
     val median: Double
@@ -62,10 +66,10 @@ class SimpleTs(val ts: List<SimpleEntry>) {
             }
         }
 
-    val latestTimestamp: Date
+    val latestTimestamp: LocalDateTime
         get() = latestEntry.timestamp
 
-    val firstTimestamp: Date
+    val firstTimestamp: LocalDateTime
         get() = ts[0].timestamp
 
     val latestTimestampString: String
@@ -77,7 +81,7 @@ class SimpleTs(val ts: List<SimpleEntry>) {
         ts.forEachIndexed { index, simpleEntry -> dateMap.put(simpleEntry.timestamp, index) }
     }
 
-    fun getEntry(d: Date): SimpleEntry? {
+    fun getEntry(d: LocalDateTime): SimpleEntry? {
         val index = dateMap[d]
         return if (index != null && index < ts.size) {
             ts[index]
@@ -87,6 +91,6 @@ class SimpleTs(val ts: List<SimpleEntry>) {
     }
 
     companion object {
-        val tsFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd kk:mm:ss", Locale.ENGLISH)
+        val tsFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss")
     }
 }
