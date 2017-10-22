@@ -4,9 +4,7 @@ package com.teeh.klimasensor.bluetooth
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
 import com.teeh.klimasensor.R
-import com.teeh.klimasensor.common.Constants
 import com.teeh.klimasensor.database.DatabaseService
 
 class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler() {
@@ -19,22 +17,22 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
         val activity = synchronizer.activity
 
         when (msg.what) {
-            Constants.MESSAGE_STATE_CHANGE -> when (msg.arg1) {
+            BluetoothConstants.MESSAGE_STATE_CHANGE -> when (msg.arg1) {
                 BluetoothConstants.STATE_CONNECTED -> synchronizer.setStatus(synchronizer.getString(R.string.title_connected_to, mConnectedDeviceName))
                 BluetoothConstants.STATE_CONNECTING -> synchronizer.setStatus(R.string.title_connecting)
                 BluetoothConstants.STATE_LISTEN, BluetoothConstants.STATE_NONE -> synchronizer.setStatus(R.string.title_not_connected)
             }
-            Constants.MESSAGE_WRITE -> {
+            BluetoothConstants.MESSAGE_WRITE -> {
                 val writeBuf = msg.obj as ByteArray
                 val writeMessage = String(writeBuf)
             }
-            Constants.MESSAGE_READ -> {
+            BluetoothConstants.MESSAGE_READ -> {
                 val readBuf = msg.obj as ByteArray
                 val readMessage = String(readBuf, 0, msg.arg1)
             }
-            Constants.MESSAGE_DEVICE_NAME -> {
+            BluetoothConstants.MESSAGE_DEVICE_NAME -> {
                 // save the connected device's name
-                mConnectedDeviceName = msg.data.getString(Constants.DEVICE_NAME)
+                mConnectedDeviceName = msg.data.getString(BluetoothConstants.DEVICE_NAME)
                 if (null != activity) {
                     Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
                             "Connected to " + mConnectedDeviceName!!,
@@ -42,13 +40,13 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                             .show()
                 }
             }
-            Constants.MESSAGE_TOAST -> if (null != activity) {
+            BluetoothConstants.MESSAGE_TOAST -> if (null != activity) {
                 Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
-                        msg.data.getString(Constants.TOAST)!!,
+                        msg.data.getString(BluetoothConstants.TOAST)!!,
                         Snackbar.LENGTH_SHORT)
                         .show()
             }
-            Constants.MESSAGE_FILE -> {
+            BluetoothConstants.MESSAGE_FILE -> {
                 val file = msg.obj as List<String>
                 DatabaseService.instance.clearSensorData()
                 writeTask = WriteToDBTask()
@@ -61,7 +59,7 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                             .show()
                 }
             }
-            Constants.MESSAGE_UPDATE -> {
+            BluetoothConstants.MESSAGE_UPDATE -> {
                 val update = msg.obj as List<String>
                 writeTask = WriteToDBTask()
                 writeTask.execute(update)
@@ -73,7 +71,7 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                             .show()
                 }
             }
-            Constants.MESSAGE_PROGRESS -> {
+            BluetoothConstants.MESSAGE_PROGRESS -> {
                 val progress = msg.obj as String
 
                 val progressParts = progress.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

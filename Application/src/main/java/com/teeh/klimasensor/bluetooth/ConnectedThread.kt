@@ -2,9 +2,7 @@ package com.teeh.klimasensor.bluetooth
 
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import com.teeh.klimasensor.common.Constants
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -69,7 +67,7 @@ class ConnectedThread(private val service: BluetoothService, private val socket:
                         totalPkgs = Integer.valueOf(msgHeaderParts[1])
                         Log.i(BluetoothConstants.TAG, "received pkg: $currentPkg/$totalPkgs")
                         val progress = currentPkg.toString() + "/" + totalPkgs
-                        service.handler.obtainMessage(Constants.MESSAGE_PROGRESS, progress)
+                        service.handler.obtainMessage(BluetoothConstants.MESSAGE_PROGRESS, progress)
                                 .sendToTarget()
                         isFile = true
                     }
@@ -84,10 +82,10 @@ class ConnectedThread(private val service: BluetoothService, private val socket:
                     if (currentPkg!!.compareTo(totalPkgs!!) == 0) {
 
                         if ("u" == msgType) {
-                            service.handler.obtainMessage(Constants.MESSAGE_UPDATE, file)
+                            service.handler.obtainMessage(BluetoothConstants.MESSAGE_UPDATE, file)
                                     .sendToTarget()
                         } else if ("d" == msgType) {
-                            service.handler.obtainMessage(Constants.MESSAGE_FILE, file)
+                            service.handler.obtainMessage(BluetoothConstants.MESSAGE_FILE, file)
                                     .sendToTarget()
                         }
 
@@ -129,7 +127,7 @@ class ConnectedThread(private val service: BluetoothService, private val socket:
             mmOutStream.write(buffer)
 
             // Share the sent message back to the UI Activity
-            service.handler.obtainMessage(Constants.MESSAGE_WRITE, -1, -1, buffer)
+            service.handler.obtainMessage(BluetoothConstants.MESSAGE_WRITE, -1, -1, buffer)
                     .sendToTarget()
         } catch (e: IOException) {
             Log.e(BluetoothConstants.TAG, "Exception during write", e)
@@ -163,9 +161,9 @@ class ConnectedThread(private val service: BluetoothService, private val socket:
      */
     private fun connectionLost() {
         // Send a failure message back to the Activity
-        val msg = service.handler.obtainMessage(Constants.MESSAGE_TOAST)
+        val msg = service.handler.obtainMessage(BluetoothConstants.MESSAGE_TOAST)
         val bundle = Bundle()
-        bundle.putString(Constants.TOAST, "Device connection was lost")
+        bundle.putString(BluetoothConstants.TOAST, "Device connection was lost")
         msg.data = bundle
         service.handler.sendMessage(msg)
 

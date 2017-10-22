@@ -1,17 +1,11 @@
 package com.teeh.klimasensor.bluetooth
 
-import android.app.ActionBar
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
 import android.content.Intent
-import android.os.AsyncTask
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -21,17 +15,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 
-import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.DatabaseActivity
 import com.teeh.klimasensor.R
 import com.teeh.klimasensor.SettingsActivity
 import com.teeh.klimasensor.TimeseriesService
-import com.teeh.klimasensor.common.Constants
 import com.teeh.klimasensor.common.ts.ValueType
 
 /**

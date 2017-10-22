@@ -18,26 +18,14 @@ package com.teeh.klimasensor.bluetooth
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothServerSocket
 import android.bluetooth.BluetoothSocket
-import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import com.teeh.klimasensor.bluetooth.BluetoothConstants.MY_UUID_SECURE
-import com.teeh.klimasensor.bluetooth.BluetoothConstants.NAME_SECURE
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_CONNECTED
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_CONNECTING
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_LISTEN
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_NONE
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.TAG
-
-import com.teeh.klimasensor.common.Constants
-
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
-import java.util.ArrayList
-import java.util.UUID
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -65,7 +53,7 @@ class BluetoothService(private val mHandler: Handler) {
         @Synchronized private set(state) {
             Log.d(TAG, "setState() $mState -> $state")
             mState = state
-            mHandler.obtainMessage(Constants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget()
+            mHandler.obtainMessage(BluetoothConstants.MESSAGE_STATE_CHANGE, state, -1).sendToTarget()
         }
 
     /**

@@ -3,9 +3,7 @@ package com.teeh.klimasensor.bluetooth
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
-import com.teeh.klimasensor.common.Constants
 import java.io.IOException
 
 /**
@@ -73,9 +71,9 @@ class ConnectThread(private val service: BluetoothService, private val device: B
      */
     private fun connectionFailed() {
         // Send a failure message back to the Activity
-        val msg = service.handler.obtainMessage(Constants.MESSAGE_TOAST)
+        val msg = service.handler.obtainMessage(BluetoothConstants.MESSAGE_TOAST)
         val bundle = Bundle()
-        bundle.putString(Constants.TOAST, "Unable to connect device")
+        bundle.putString(BluetoothConstants.TOAST, "Unable to connect device")
         msg.data = bundle
         service.handler.sendMessage(msg)
 
@@ -84,9 +82,9 @@ class ConnectThread(private val service: BluetoothService, private val device: B
     }
 
     private fun connectionSuccessful(device: BluetoothDevice) {
-        val msg = service.handler.obtainMessage(Constants.MESSAGE_DEVICE_NAME)
+        val msg = service.handler.obtainMessage(BluetoothConstants.MESSAGE_DEVICE_NAME)
         val bundle = Bundle()
-        bundle.putString(Constants.DEVICE_NAME, device.name)
+        bundle.putString(BluetoothConstants.DEVICE_NAME, device.name)
         msg.data = bundle
         service.handler.sendMessage(msg)
     }
