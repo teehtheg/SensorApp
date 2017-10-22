@@ -43,7 +43,7 @@ class BluetoothSynchronizer : Fragment() {
     /**
      * Member object for the chat services
      */
-    private lateinit var mChatService: BluetoothService
+    private var mChatService: BluetoothService? = null
 
     private lateinit var buttonDownload: Button
     private lateinit var buttonUpdate: Button
@@ -107,7 +107,7 @@ class BluetoothSynchronizer : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mChatService.stop()
+        mChatService!!.stop()
     }
 
     override fun onResume() {
@@ -118,9 +118,9 @@ class BluetoothSynchronizer : Fragment() {
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService.state == BluetoothConstants.STATE_NONE) {
+            if (mChatService!!.state == BluetoothConstants.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService.start()
+                mChatService!!.start()
             }
         }
     }
@@ -176,7 +176,7 @@ class BluetoothSynchronizer : Fragment() {
      */
     private fun downloadData() {
         // Check that we're actually connected before trying anything
-        if (mChatService.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -185,7 +185,7 @@ class BluetoothSynchronizer : Fragment() {
             return
         }
 
-        mChatService.write("getData".toByteArray())
+        mChatService!!.write("getData".toByteArray())
     }
 
     /**
@@ -193,7 +193,7 @@ class BluetoothSynchronizer : Fragment() {
      */
     private fun updateData() {
         // Check that we're actually connected before trying anything
-        if (mChatService.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -208,7 +208,7 @@ class BluetoothSynchronizer : Fragment() {
                 .latestTimestampString
 
         val msg = "getDataUpdate;" + latestTs
-        mChatService.write(msg.toByteArray())
+        mChatService!!.write(msg.toByteArray())
     }
 
     /**
@@ -218,7 +218,7 @@ class BluetoothSynchronizer : Fragment() {
      */
     private fun sendMessage(message: String) {
         // Check that we're actually connected before trying anything
-        if (mChatService.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -231,7 +231,7 @@ class BluetoothSynchronizer : Fragment() {
         if (message.length > 0) {
             // Get the message bytes and tell the BluetoothService to write
             val send = message.toByteArray()
-            mChatService.write(send)
+            mChatService!!.write(send)
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0)
@@ -317,7 +317,7 @@ class BluetoothSynchronizer : Fragment() {
         // Get the BluetoothDevice object
         val device = mBluetoothAdapter!!.getRemoteDevice(address)
         // Attempt to connect to the device
-        mChatService.connect(device)
+        mChatService!!.connect(device)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
