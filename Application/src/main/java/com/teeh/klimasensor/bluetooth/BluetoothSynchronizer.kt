@@ -77,12 +77,12 @@ class BluetoothSynchronizer : Fragment() {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             val activity = activity
-            Snackbar.make(getActivity().findViewById(android.R.id.content),
+            Snackbar.make(getActivity()!!.findViewById(android.R.id.content),
                     "Bluetooth is not available",
                     Snackbar.LENGTH_SHORT)
                     .show()
 
-            activity.finish()
+            activity!!.finish()
         }
     }
 
@@ -101,8 +101,8 @@ class BluetoothSynchronizer : Fragment() {
 
         registerButtonListeners()
 
-        progressBar = activity.findViewById<View>(R.id.progress_download) as ProgressBar
-        progressText = activity.findViewById<View>(R.id.progress_download_text) as TextView
+        progressBar = activity!!.findViewById<View>(R.id.progress_download) as ProgressBar
+        progressText = activity!!.findViewById<View>(R.id.progress_download_text) as TextView
     }
 
     override fun onDestroy() {
@@ -125,20 +125,15 @@ class BluetoothSynchronizer : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.bluetooth_synchronizer, container, false)
-    }
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.bluetooth_synchronizer, container, false)
     }
 
     private fun registerButtonListeners() {
-        buttonDownload = activity.findViewById<View>(R.id.button_download) as Button
+        buttonDownload = activity!!.findViewById<View>(R.id.button_download) as Button
         buttonDownload.setOnClickListener { downloadData() }
 
-        buttonUpdate = activity.findViewById<View>(R.id.button_update) as Button
+        buttonUpdate = activity!!.findViewById<View>(R.id.button_update) as Button
         buttonUpdate.setOnClickListener { updateData() }
     }
 
@@ -177,7 +172,7 @@ class BluetoothSynchronizer : Fragment() {
     private fun downloadData() {
         // Check that we're actually connected before trying anything
         if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
-            Snackbar.make(activity.findViewById(android.R.id.content),
+            Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
                     .show()
@@ -194,7 +189,7 @@ class BluetoothSynchronizer : Fragment() {
     private fun updateData() {
         // Check that we're actually connected before trying anything
         if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
-            Snackbar.make(activity.findViewById(android.R.id.content),
+            Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
                     .show()
@@ -219,7 +214,7 @@ class BluetoothSynchronizer : Fragment() {
     private fun sendMessage(message: String) {
         // Check that we're actually connected before trying anything
         if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
-            Snackbar.make(activity.findViewById(android.R.id.content),
+            Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
                     .show()
@@ -294,12 +289,12 @@ class BluetoothSynchronizer : Fragment() {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled")
 
-                    Snackbar.make(activity.findViewById(android.R.id.content),
+                    Snackbar.make(activity!!.findViewById(android.R.id.content),
                             R.string.bt_not_enabled_leaving,
                             Snackbar.LENGTH_SHORT)
                             .show()
 
-                    activity.finish()
+                    activity!!.finish()
                 }
         }
     }

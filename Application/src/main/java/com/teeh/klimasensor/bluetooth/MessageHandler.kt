@@ -34,14 +34,14 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                 // save the connected device's name
                 mConnectedDeviceName = msg.data.getString(BluetoothConstants.DEVICE_NAME)
                 if (null != activity) {
-                    Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
+                    Snackbar.make(synchronizer.activity!!.findViewById(android.R.id.content),
                             "Connected to " + mConnectedDeviceName!!,
                             Snackbar.LENGTH_SHORT)
                             .show()
                 }
             }
             BluetoothConstants.MESSAGE_TOAST -> if (null != activity) {
-                Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
+                Snackbar.make(synchronizer.activity!!.findViewById(android.R.id.content),
                         msg.data.getString(BluetoothConstants.TOAST)!!,
                         Snackbar.LENGTH_SHORT)
                         .show()
@@ -53,7 +53,7 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                 writeTask.execute(file)
 
                 if (null != activity) {
-                    Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
+                    Snackbar.make(synchronizer.activity!!.findViewById(android.R.id.content),
                             file.size.toString() + " records downloaded",
                             Snackbar.LENGTH_SHORT)
                             .show()
@@ -65,7 +65,7 @@ class MessageHandler(private val synchronizer: BluetoothSynchronizer) : Handler(
                 writeTask.execute(update)
 
                 if (null != activity) {
-                    Snackbar.make(synchronizer.activity.findViewById(android.R.id.content),
+                    Snackbar.make(synchronizer.activity!!.findViewById(android.R.id.content),
                             update.size.toString() + " records downloaded",
                             Snackbar.LENGTH_SHORT)
                             .show()
