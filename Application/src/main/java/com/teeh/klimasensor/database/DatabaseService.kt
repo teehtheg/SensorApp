@@ -5,7 +5,6 @@ import android.content.Context
 import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
-import android.os.AsyncTask
 
 import com.teeh.klimasensor.common.ts.SimpleTs
 
@@ -19,9 +18,7 @@ import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
 import org.jetbrains.anko.doAsync
-import java.time.Instant
 import java.time.LocalDateTime
-import java.time.ZoneId
 
 class DatabaseService private constructor() {
 
@@ -105,7 +102,7 @@ class DatabaseService private constructor() {
         )
     }
 
-    fun getAllSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
+    fun getAllSensordataRange(startDate: Date, endDate: Date): List<TsEntry> {
 
         val cursor = readableDB.rawQuery("SELECT * FROM " + KlimasensorEntry.TABLE_NAME +
                 " WHERE " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " BETWEEN " + DateUtils.toLong(startDate) + " AND " + DateUtils.toLong(endDate) +
@@ -124,7 +121,7 @@ class DatabaseService private constructor() {
             val fields = line.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             try {
-                val d = LocalDateTime.parse(fields[0], SimpleTs.tsFormat)
+                val d = DateUtils.toDate(fields[0])
                 val h = java.lang.Double.valueOf(fields[1])
                 val t = java.lang.Double.valueOf(fields[2])
                 val p = java.lang.Double.valueOf(fields[3])

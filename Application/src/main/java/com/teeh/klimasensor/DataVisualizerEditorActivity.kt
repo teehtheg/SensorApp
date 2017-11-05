@@ -1,9 +1,7 @@
 package com.teeh.klimasensor
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
@@ -14,13 +12,10 @@ import android.widget.TextView
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
-import com.teeh.klimasensor.DataVisualizerEditorActivity.Companion.TAG
 import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.ValueType
 import com.teeh.klimasensor.common.utils.DateUtils
-
-import java.util.Date
 
 /**
  * Created by teeh on 21.06.2017.
@@ -45,8 +40,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
             internal val tvMax = findViewById<View>(R.id.upperDate) as TextView
 
             override fun valueChanged(minValue: Number, maxValue: Number) {
-                tvMin.text = DateUtils.toString(DateUtils.toDate(minValue as Long))
-                tvMax.text = DateUtils.toString(DateUtils.toDate(maxValue as Long))
+                tvMin.text = DateUtils.toString(DateUtils.toLocalDate(minValue as Long))
+                tvMax.text = DateUtils.toString(DateUtils.toLocalDate(maxValue as Long))
 
                 startDate = minValue
                 endDate = maxValue

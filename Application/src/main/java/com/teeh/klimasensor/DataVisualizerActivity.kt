@@ -2,11 +2,7 @@ package com.teeh.klimasensor
 
 import android.graphics.Color
 import android.os.Bundle
-import android.renderscript.Sampler
 import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.widget.Toast
 
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.BaseSeries
@@ -18,22 +14,16 @@ import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
 import com.teeh.klimasensor.common.mappers.SimpleTsMapper
 import com.teeh.klimasensor.common.ts.SensorTs
-import com.teeh.klimasensor.common.ts.SimpleEntry
 import com.teeh.klimasensor.common.ts.SimpleTs
 import com.teeh.klimasensor.common.ts.ValueType
 import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.common.utils.TsUtil
 
 import android.util.Log
-import android.view.View
 import com.teeh.klimasensor.common.exception.BusinessException
 
-import java.lang.reflect.Constructor
-import java.lang.reflect.InvocationTargetException
 import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.Arrays
-import java.util.Date
+import java.util.*
 
 
 /**
@@ -61,8 +51,8 @@ class DataVisualizerActivity : BaseActivity() {
     private lateinit var sensorTs: SensorTs
     private lateinit var graph: GraphView
 
-    private lateinit var startDate: LocalDateTime
-    private lateinit var endDate: LocalDateTime
+    private lateinit var startDate: Date
+    private lateinit var endDate: Date
     private var dataType: Int = 0
 
     //    public class TsType {

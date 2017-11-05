@@ -5,6 +5,7 @@ import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.ts.SimpleEntry
 import com.teeh.klimasensor.common.ts.SimpleTs
 import com.teeh.klimasensor.common.ts.ValueType
+import com.teeh.klimasensor.common.utils.DateUtils
 
 import java.time.ZoneId
 import java.util.ArrayList
@@ -37,7 +38,7 @@ object SimpleTsMapper {
         val list = ArrayList<DataPoint>()
         for ((_, value, timestamp1) in ts.ts) {
             if (value != null) {
-                val timestamp = Date.from(timestamp1.atZone(ZoneId.systemDefault()).toInstant())
+                val timestamp = DateUtils.toDate(timestamp1)
                 list.add(DataPoint(timestamp, value))
             }
         }

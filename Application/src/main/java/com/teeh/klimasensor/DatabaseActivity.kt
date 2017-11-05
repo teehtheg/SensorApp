@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 import android.media.CamcorderProfile.get
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.ts.SimpleTs.Companion
+import com.teeh.klimasensor.common.utils.DateUtils
 
 /**
  * Created by teeh on 28.01.2017.
@@ -52,7 +53,7 @@ class DatabaseActivity : BaseActivity() {
 
             override fun onProgressChanged(seekBar: SeekBar, progresValue: Int, fromUser: Boolean) {
                 current = seekBarSteps[progresValue]
-                seekBarText.text = SimpleTs.tsFormat.format(current!!.timestamp)
+                seekBarText.text = DateUtils.toString(current!!.timestamp)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -99,11 +100,11 @@ class DatabaseActivity : BaseActivity() {
         dbNumEntries!!.text = numEntries.toString()
 
         if (oldestEntry != null) {
-            dbOldestEntry!!.text = SimpleTs.tsFormat.format(oldestEntry.timestamp)
+            dbOldestEntry!!.text = DateUtils.toString(oldestEntry.timestamp)
         }
 
         if (latestEntry != null) {
-            dbLatestEntry!!.text = SimpleTs.tsFormat.format(latestEntry.timestamp)
+            dbLatestEntry!!.text = DateUtils.toString(latestEntry.timestamp)
         }
 
         clearDataListener = View.OnClickListener { DatabaseService.instance.clearSensorData() }
@@ -154,7 +155,7 @@ class DatabaseActivity : BaseActivity() {
     private fun showTsEntry(entry: TsEntry) {
         shownEntry = entry
 
-        tsEntryTimestamp.setText(SimpleTs.tsFormat.format(entry.timestamp))
+        tsEntryTimestamp.setText(DateUtils.toString(entry.timestamp))
         tsEntryTemperature.setText(entry.temperature.toString())
         tsEntryRealTemperature.setText(if (entry.realTemperature != null) entry.realTemperature.toString() else "null")
         tsEntryPressure.setText(entry.pressure.toString())
@@ -170,7 +171,7 @@ class DatabaseActivity : BaseActivity() {
 
         try {
             shownEntry = TsEntry(0,
-                    LocalDateTime.parse(ts, SimpleTs.tsFormat),
+                    DateUtils.toDate(ts),
                     java.lang.Double.valueOf(humid),
                     java.lang.Double.valueOf(temp),
                     java.lang.Double.valueOf(press),

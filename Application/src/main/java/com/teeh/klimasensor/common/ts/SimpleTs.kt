@@ -2,6 +2,7 @@ package com.teeh.klimasensor.common.ts
 
 import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.utils.CalcUtil
+import com.teeh.klimasensor.common.utils.DateUtils
 
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -21,7 +22,7 @@ import java.time.format.DateTimeFormatter
  */
 
 class SimpleTs(val ts: List<SimpleEntry>) {
-    private val dateMap: MutableMap<LocalDateTime, Int>
+    private val dateMap: MutableMap<Date, Int>
 
     val valueList: List<Double?>
         get() = ts.map { x -> x.value }
@@ -66,14 +67,14 @@ class SimpleTs(val ts: List<SimpleEntry>) {
             }
         }
 
-    val latestTimestamp: LocalDateTime
+    val latestTimestamp: Date
         get() = latestEntry.timestamp
 
-    val firstTimestamp: LocalDateTime
+    val firstTimestamp: Date
         get() = ts[0].timestamp
 
     val latestTimestampString: String
-        get() = tsFormat.format(latestTimestamp)
+        get() = DateUtils.toString(latestTimestamp)
 
 
     init {
@@ -81,7 +82,7 @@ class SimpleTs(val ts: List<SimpleEntry>) {
         ts.forEachIndexed { index, simpleEntry -> dateMap.put(simpleEntry.timestamp, index) }
     }
 
-    fun getEntry(d: LocalDateTime): SimpleEntry? {
+    fun getEntry(d: Date): SimpleEntry? {
         val index = dateMap[d]
         return if (index != null && index < ts.size) {
             ts[index]
