@@ -4,6 +4,7 @@ package com.teeh.klimasensor.common.utils
  * Created by teeh on 24.06.2017.
  */
 import com.teeh.klimasensor.TsEntry
+import com.teeh.klimasensor.common.constants.Constants.STRING_DATE_FORMAT
 import com.teeh.klimasensor.common.ts.SimpleTs
 import java.text.SimpleDateFormat
 
@@ -14,7 +15,7 @@ import java.util.Date
 
 object DateUtils {
 
-    var format = SimpleDateFormat("yyyy-MM-dd kk:mm:ss")
+    var format = SimpleDateFormat(STRING_DATE_FORMAT)
 
     fun toLong(date: LocalDateTime): Long {
         return date.atZone(ZoneId.systemDefault()).toEpochSecond()

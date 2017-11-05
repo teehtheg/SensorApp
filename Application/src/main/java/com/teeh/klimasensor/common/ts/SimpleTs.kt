@@ -1,6 +1,7 @@
 package com.teeh.klimasensor.common.ts
 
 import com.teeh.klimasensor.TsEntry
+import com.teeh.klimasensor.common.constants.Constants.STRING_DATE_FORMAT
 import com.teeh.klimasensor.common.utils.CalcUtil
 import com.teeh.klimasensor.common.utils.DateUtils
 
@@ -92,6 +93,6 @@ class SimpleTs(val ts: List<SimpleEntry>) {
     }
 
     companion object {
-        val tsFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss")
+        val tsFormat = DateTimeFormatter.ofPattern(STRING_DATE_FORMAT)
     }
 }
