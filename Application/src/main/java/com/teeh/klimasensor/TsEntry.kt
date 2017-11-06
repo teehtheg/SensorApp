@@ -7,7 +7,13 @@ class TsEntry(val id: Int, val timestamp: Date, val humidity: Double?, val tempe
 
     var realTemperature: Double? = null
 
-    constructor(i: Int, d: Date, h: Double?, t: Double?, p: Double?, rt: Double?) : this(i, d, h, t, p) {
-        realTemperature = rt
+    constructor(id: Int,
+                timestamp: Date,
+                humidity: Double?,
+                temperature: Double?,
+                pressure: Double?,
+                realTemperature: Double?) : this(id, timestamp, humidity, temperature, pressure) {
+
+        this.realTemperature = realTemperature
     }
 }

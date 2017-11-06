@@ -5,11 +5,10 @@ import com.teeh.klimasensor.common.utils.CalcUtil
 
 import java.util.ArrayList
 
-/**
- * Created by teeh on 16.07.2017.
- */
-
-class SensorTs(private val temperature: SimpleTs, private val realTemperature: SimpleTs, private val pressure: SimpleTs, private val humidity: SimpleTs) {
+class SensorTs(private val temperature: SimpleTs,
+               private val realTemperature: SimpleTs,
+               private val pressure: SimpleTs,
+               private val humidity: SimpleTs) {
 
 
     /////////////////

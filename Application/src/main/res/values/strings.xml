@@ -52,15 +52,22 @@
     <string name="button_download">Download complete Sensordata</string>
     <string name="button_show_visualizer">Show Data Visualizer</string>
     <string name="button_show_analyzer">Show Data Analyzer</string>
-    <string name="button_clear_data">Delete Sensordata</string>
+    <string name="button_clear_data">Delete complete Sensordata</string>
     <string name="button_add_real_temp">Add real Temperature</string>
     <string name="button_show_graph">Show Graph</string>
 
     <string name="clear_data_warning">Do you want to clear the DB?</string>
     <string name="update_data_warning">Do you want to update this Entry?</string>
+    <string name="create_data_warning">Do you want to create this Entry?</string>
 
     <string name="update_data_success">Successfully updated!</string>
     <string name="update_data_failure">Failed update!</string>
+
+    <string name="clear_data_success">Successfully cleared %1$d entries!</string>
+    <string name="clear_data_failure">Failed clearing all sensordata!</string>
+
+    <string name="create_data_success">Successfully created!</string>
+    <string name="create_data_failure">Failed create!</string>
 
     <string name="settings">Settings</string>
 

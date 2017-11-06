@@ -276,24 +276,36 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Next"
-                android:onClick="loadNext" />
+                android:onClick="loadNext"
+                android:text="Next" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update Sensordata"
+                android:text="Update entry"
                 android:onClick="updateSensordata" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button_clear_data"
-            android:text="@string/button_clear_data"
-            android:textSize="18dp"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:onClick="clearDataWarning" />
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create entry"
+                android:onClick="createSensordata" />
+
+            <Button
+                android:id="@+id/button_clear_data"
+                android:text="@string/button_clear_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="clearSensordata" />
+
+
+        </LinearLayout>
 
     </LinearLayout>
 

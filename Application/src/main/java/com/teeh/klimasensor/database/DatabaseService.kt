@@ -6,8 +6,6 @@ import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 
-import com.teeh.klimasensor.common.ts.SimpleTs
-
 import android.util.Log
 
 import java.text.ParseException
@@ -18,7 +16,6 @@ import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
 import org.jetbrains.anko.doAsync
-import java.time.LocalDateTime
 
 class DatabaseService private constructor() {
 
@@ -32,6 +29,9 @@ class DatabaseService private constructor() {
 
     companion object {
         val instance: DatabaseService by lazy { Holder.INSTANCE }
+
+        private val EXTREMUM_MAX: String = "MAX"
+        private val EXTREMUM_MIN: String = "MIN"
     }
 
     private val sensorDataProj = arrayOf(KlimasensorEntry.COLUMN_NAME_ID, KlimasensorEntry.COLUMN_NAME_TIMESTAMP, KlimasensorEntry.COLUMN_NAME_TEMPERATURE, KlimasensorEntry.COLUMN_NAME_REAL_TEMPERATURE, KlimasensorEntry.COLUMN_NAME_HUMIDITY, KlimasensorEntry.COLUMN_NAME_PRESSURE)
@@ -44,10 +44,10 @@ class DatabaseService private constructor() {
         get() = DatabaseUtils.queryNumEntries(readableDB, KlimasensorEntry.TABLE_NAME)
 
     val oldestEntry: TsEntry
-        get() = getExtremalEntry("MIN", KlimasensorEntry.COLUMN_NAME_TIMESTAMP)
+        get() = getExtremalEntry(EXTREMUM_MIN, KlimasensorEntry.COLUMN_NAME_TIMESTAMP)
 
     val latestEntry: TsEntry
-        get() = getExtremalEntry("MAX", KlimasensorEntry.COLUMN_NAME_TIMESTAMP)
+        get() = getExtremalEntry(EXTREMUM_MAX, KlimasensorEntry.COLUMN_NAME_TIMESTAMP)
 
     // Filter results WHERE "title" = 'My Title'
     // String selection = FeedEntry.COLUMN_NAME_TITLE + " = ?";
@@ -96,10 +96,10 @@ class DatabaseService private constructor() {
         dbHelper.close()
     }
 
-    fun clearSensorData() {
-        writableDB.delete(
-                KlimasensorEntry.TABLE_NAME, null, null
-        )
+    fun clearSensorData(): Long {
+        return writableDB.delete(
+                KlimasensorEntry.TABLE_NAME, "1", null
+        ).toLong()
     }
 
     fun getAllSensordataRange(startDate: Date, endDate: Date): List<TsEntry> {
@@ -149,7 +149,29 @@ class DatabaseService private constructor() {
         }
     }
 
-    fun updateSensordata(list: List<TsEntry>): Long {
+    fun createEntries(list: List<TsEntry>): Long {
+        var result: Long = 0
+
+        for (entry in list) {
+            val content = ContentValues()
+            content.put(KlimasensorEntry.COLUMN_NAME_TIMESTAMP, DateUtils.toLong(entry.timestamp))
+            content.put(KlimasensorEntry.COLUMN_NAME_HUMIDITY, entry.humidity)
+            content.put(KlimasensorEntry.COLUMN_NAME_TEMPERATURE, entry.temperature)
+            content.put(KlimasensorEntry.COLUMN_NAME_REAL_TEMPERATURE, entry.realTemperature)
+            content.put(KlimasensorEntry.COLUMN_NAME_PRESSURE, entry.pressure)
+
+            val res = writableDB.insert(
+                    KlimasensorEntry.TABLE_NAME,
+                    null,
+                    content).toLong()
+
+            result = result + res
+
+        }
+        return result
+    }
+
+    fun updateEntries(list: List<TsEntry>): Long {
         var result: Long = 0
         for (entry in list) {
             val content = ContentValues()
@@ -174,11 +196,20 @@ class DatabaseService private constructor() {
         return result
     }
 
-    fun updateSensordata(entry: TsEntry): Boolean {
+    fun updateEntry(entry: TsEntry): Boolean {
         val list = ArrayList<TsEntry>()
         list.add(entry)
-        val res = updateSensordata(list)
+        val res = updateEntries(list)
         return if (res == 1L) {
+            true
+        } else false
+    }
+
+    fun createEntry(entry: TsEntry): Boolean {
+        val list = ArrayList<TsEntry>()
+        list.add(entry)
+        val res = createEntries(list)
+        return if (res == -1L) {
             true
         } else false
     }
@@ -261,10 +292,12 @@ class DatabaseService private constructor() {
             return result[0]
         }
         else if (result.size > 1) {
-            throw BusinessException("Extremal entry is not unique!")
+            Log.w(TAG, "Extremal entry is not unique!")
+            return result[0]
         }
         else {
-            throw BusinessException("No extremal entry found!")
+            Log.w(TAG, "Database is empty.")
+            return TsEntry(0, Date(0), null, null, null)
         }
     }
 }

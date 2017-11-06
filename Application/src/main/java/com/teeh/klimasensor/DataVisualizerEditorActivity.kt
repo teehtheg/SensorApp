@@ -40,8 +40,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
             internal val tvMax = findViewById<View>(R.id.upperDate) as TextView
 
             override fun valueChanged(minValue: Number, maxValue: Number) {
-                tvMin.text = DateUtils.toString(DateUtils.toLocalDate(minValue as Long))
-                tvMax.text = DateUtils.toString(DateUtils.toLocalDate(maxValue as Long))
+                tvMin.text = DateUtils.toString(DateUtils.toDate(minValue as Long))
+                tvMax.text = DateUtils.toString(DateUtils.toDate(maxValue as Long))
 
                 startDate = minValue
                 endDate = maxValue

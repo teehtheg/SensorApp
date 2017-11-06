@@ -1,26 +1,10 @@
 package com.teeh.klimasensor.common.ts
 
-import com.teeh.klimasensor.TsEntry
-import com.teeh.klimasensor.common.constants.Constants.STRING_DATE_FORMAT
 import com.teeh.klimasensor.common.utils.CalcUtil
 import com.teeh.klimasensor.common.utils.DateUtils
 
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.util.ArrayList
-import java.util.Collections
 import java.util.Date
 import java.util.HashMap
-import java.util.Locale
-import java.util.stream.Collectors
-import java.time.format.DateTimeFormatter
-
-
-
-/**
- * Created by teeh on 16.07.2017.
- */
 
 class SimpleTs(val ts: List<SimpleEntry>) {
     private val dateMap: MutableMap<Date, Int>
@@ -93,6 +77,6 @@ class SimpleTs(val ts: List<SimpleEntry>) {
     }
 
     companion object {
-        val tsFormat = DateTimeFormatter.ofPattern(STRING_DATE_FORMAT)
+        //val tsFormat = DateTimeFormatter.ofPattern(STRING_DATE_FORMAT)
     }
 }

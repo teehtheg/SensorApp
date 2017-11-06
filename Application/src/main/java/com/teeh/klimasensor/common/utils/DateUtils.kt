@@ -17,21 +17,21 @@ object DateUtils {
 
     var format = SimpleDateFormat(STRING_DATE_FORMAT)
 
-    fun toLong(date: LocalDateTime): Long {
-        return date.atZone(ZoneId.systemDefault()).toEpochSecond()
-    }
+//    fun toLong(date: LocalDateTime): Long {
+//        return date.atZone(ZoneId.systemDefault()).toEpochSecond()
+//    }
 
     fun toLong(date: Date): Long {
         return date.time
     }
 
-    fun toLocalDate(date: Long?): LocalDateTime {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(date!!), ZoneId.systemDefault())
-    }
-
-    fun toLocalDate(date: String): LocalDateTime {
-        return LocalDateTime.parse(date, SimpleTs.tsFormat)
-    }
+//    fun toLocalDate(date: Long?): LocalDateTime {
+//        return LocalDateTime.ofInstant(Instant.ofEpochMilli(date!!), ZoneId.systemDefault())
+//    }
+//
+//    fun toLocalDate(date: String): LocalDateTime {
+//        return LocalDateTime.parse(date, SimpleTs.tsFormat)
+//    }
 
     fun toDate(date: Long): Date {
         return Date(date)
@@ -45,11 +45,14 @@ object DateUtils {
         return date
     }
 
-    fun toString(date: LocalDateTime): String {
-        return SimpleTs.tsFormat.format(date)
-    }
+//    fun toString(date: LocalDateTime): String {
+//        return SimpleTs.tsFormat.format(date)
+//    }
 
     fun toString(date: Date): String {
+        if (date == Date(0)) {
+            return "-"
+        }
         return format.format(date)
     }
 }

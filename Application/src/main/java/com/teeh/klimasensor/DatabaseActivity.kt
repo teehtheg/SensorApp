@@ -1,6 +1,5 @@
 package com.teeh.klimasensor
 
-import android.app.DialogFragment
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -11,20 +10,10 @@ import android.widget.SeekBar
 import android.widget.TextView
 
 import com.teeh.klimasensor.common.activities.BaseActivity
-import com.teeh.klimasensor.common.ts.SimpleTs
 import com.teeh.klimasensor.database.DatabaseService
 
-import java.text.ParseException
-import java.time.LocalDateTime
-
-import android.media.CamcorderProfile.get
 import com.teeh.klimasensor.common.exception.BusinessException
-import com.teeh.klimasensor.common.ts.SimpleTs.Companion
 import com.teeh.klimasensor.common.utils.DateUtils
-
-/**
- * Created by teeh on 28.01.2017.
- */
 
 class DatabaseActivity : BaseActivity() {
 
@@ -41,6 +30,7 @@ class DatabaseActivity : BaseActivity() {
     private lateinit var seekBarText: TextView
     private lateinit var clearDataListener: View.OnClickListener
     private lateinit var updateDataListener: View.OnClickListener
+    private lateinit var createDataListener: View.OnClickListener
 
     private var currentIndex: Int? = null
     private lateinit var shownEntry: TsEntry
@@ -97,28 +87,17 @@ class DatabaseActivity : BaseActivity() {
         val oldestEntry = DatabaseService.instance.oldestEntry
         val latestEntry = DatabaseService.instance.latestEntry
 
-        dbNumEntries!!.text = numEntries.toString()
+        dbNumEntries.text = numEntries.toString()
 
-        if (oldestEntry != null) {
-            dbOldestEntry!!.text = DateUtils.toString(oldestEntry.timestamp)
-        }
+        dbOldestEntry.text = DateUtils.toString(oldestEntry.timestamp)
+        dbLatestEntry.text = DateUtils.toString(latestEntry.timestamp)
 
-        if (latestEntry != null) {
-            dbLatestEntry!!.text = DateUtils.toString(latestEntry.timestamp)
-        }
-
-        clearDataListener = View.OnClickListener { DatabaseService.instance.clearSensorData() }
+        clearDataListener = View.OnClickListener { clearSensordata() }
 
         updateDataListener = View.OnClickListener { updateSensordata() }
 
-    }
+        createDataListener = View.OnClickListener { createSensordata() }
 
-    fun clearDataWarning(view: View) {
-        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.clear_data_warning, Snackbar.LENGTH_SHORT)
-
-        mySnackbar.setAction("YES", clearDataListener)
-                .setActionTextColor(Color.GREEN)
-                .show()
     }
 
     fun showTimePickerDialog(v: View) {
@@ -131,6 +110,15 @@ class DatabaseActivity : BaseActivity() {
         newFragment.show(fragmentManager, "datePicker")
     }
 
+
+    fun clearSensordata(view: View) {
+        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.clear_data_warning, Snackbar.LENGTH_SHORT)
+
+        mySnackbar.setAction("YES", clearDataListener)
+                .setActionTextColor(Color.GREEN)
+                .show()
+    }
+
     fun updateSensordata(v: View) {
         val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_warning, Snackbar.LENGTH_LONG)
 
@@ -139,15 +127,46 @@ class DatabaseActivity : BaseActivity() {
                 .show()
     }
 
+    fun createSensordata(v: View) {
+        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_warning, Snackbar.LENGTH_LONG)
+
+        mySnackbar.setAction("YES", createDataListener)
+                .setActionTextColor(Color.GREEN)
+                .show()
+    }
+
+    private fun clearSensordata() {
+        val res = DatabaseService.instance.clearSensorData()
+        val snackbar: Snackbar
+        if (res != 0L) {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.clear_data_success, res), Snackbar.LENGTH_SHORT)
+        } else {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.clear_data_failure, Snackbar.LENGTH_SHORT)
+        }
+        snackbar.show()
+
+    }
 
     private fun updateSensordata() {
         val entry = readTsEntry()
-        val res = DatabaseService.instance.updateSensordata(entry)
+        val res = DatabaseService.instance.updateEntry(entry)
         val snackbar: Snackbar
         if (res) {
             snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_success, Snackbar.LENGTH_SHORT)
         } else {
             snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_failure, Snackbar.LENGTH_SHORT)
+        }
+        snackbar.show()
+    }
+
+    private fun createSensordata() {
+        val entry = readTsEntry()
+        val res = DatabaseService.instance.createEntry(entry)
+        val snackbar: Snackbar
+        if (res) {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_success, Snackbar.LENGTH_SHORT)
+        } else {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_failure, Snackbar.LENGTH_SHORT)
         }
         snackbar.show()
     }
