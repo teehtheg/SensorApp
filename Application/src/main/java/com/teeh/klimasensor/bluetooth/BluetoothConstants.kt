@@ -9,7 +9,7 @@ object BluetoothConstants {
     val TAG = "BluetoothService"
 
     // Name for the SDP record when creating server socket
-    val NAME_INSECURE = "BluetoothInSecure"
+    val NAME_INSECURE = "BluetoothChatInsecure"
 
     // Unique UUID for this application
     val MY_UUID_INSECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66")
