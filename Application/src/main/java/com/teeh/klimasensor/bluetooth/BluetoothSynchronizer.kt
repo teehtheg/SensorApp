@@ -94,10 +94,9 @@ class BluetoothSynchronizer : Fragment() {
         if (!mBluetoothAdapter!!.isEnabled) {
             val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT)
-
-            // Otherwise, setup the chat session
-            setupChat()
         }
+
+        setupChat()
 
         registerButtonListeners()
 

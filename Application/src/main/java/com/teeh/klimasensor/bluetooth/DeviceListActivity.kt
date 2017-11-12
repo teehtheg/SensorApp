@@ -30,7 +30,7 @@ class DeviceListActivity : Activity() {
     /**
      * Member fields
      */
-    private var mBtAdapter: BluetoothAdapter? = null
+    private lateinit var mBtAdapter: BluetoothAdapter
 
     /**
      * Newly discovered devices

@@ -12,7 +12,7 @@ object BluetoothConstants {
     val NAME_SECURE = "BluetoothSecure"
 
     // Unique UUID for this application
-    val MY_UUID_SECURE = UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66")
+    val MY_UUID_SECURE = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66")
 
     // Constants that indicate the current connection state
     val STATE_NONE = 0       // we're doing nothing
