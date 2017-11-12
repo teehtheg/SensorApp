@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.os.Bundle
 import android.util.Log
+import com.teeh.klimasensor.bluetooth.BluetoothConstants.MY_UUID_INSECURE
 import java.io.IOException
 
 /**
@@ -19,11 +20,11 @@ class ConnectThread(private val service: BluetoothService, private val device: B
 
     init {
         mmDevice = device
-        mSocketType = "Secure"
+        mSocketType = "InSecure"
 
         try {
-            mmSocket = mmDevice.createRfcommSocketToServiceRecord(
-                    BluetoothConstants.MY_UUID_SECURE)
+            mmSocket = mmDevice.createInsecureRfcommSocketToServiceRecord(BluetoothConstants.MY_UUID_INSECURE)
+
         } catch (e: IOException) {
             Log.e(BluetoothConstants.TAG, "Socket Type: " + mSocketType + "create() failed", e)
         }
