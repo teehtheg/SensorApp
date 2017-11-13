@@ -13,7 +13,7 @@ import java.util.ArrayList
  * It handles all incoming and outgoing transmissions.
  */
 class ConnectedThread(private val service: BluetoothService, private val socket: BluetoothSocket) : Thread() {
-    private lateinit var mmSocket: BluetoothSocket
+    private var mmSocket: BluetoothSocket
     private lateinit var mmInStream: InputStream
     private lateinit var mmOutStream: OutputStream
 
@@ -25,8 +25,6 @@ class ConnectedThread(private val service: BluetoothService, private val socket:
         mmSocket = socket
 
         Log.d(BluetoothConstants.TAG, "create ConnectedThread")
-        var tmpIn: InputStream? = null
-        var tmpOut: OutputStream? = null
 
         // Get the BluetoothSocket input and output streams
         try {

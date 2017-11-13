@@ -41,7 +41,7 @@ class ConnectThread(private val service: BluetoothService, private val device: B
             mmSocket.connect()
         } catch (e: IOException) {
             // Close the socket
-            Log.e(BluetoothConstants.TAG, "Could not connect because of: " + e.localizedMessage)
+            Log.e(BluetoothConstants.TAG, "ConnectThread could not connect. Reason:" + e.localizedMessage)
             try {
                 mmSocket.close()
             } catch (e2: IOException) {

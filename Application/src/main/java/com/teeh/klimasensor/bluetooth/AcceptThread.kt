@@ -50,6 +50,7 @@ class AcceptThread(private val service: BluetoothService) : Thread() {
 
             // If a connection was accepted
             if (socket != null) {
+                Log.i(BluetoothConstants.TAG, "Socket is created.")
                 synchronized(this) {
                     when (service.state) {
                         BluetoothConstants.STATE_LISTEN, BluetoothConstants.STATE_CONNECTING ->
