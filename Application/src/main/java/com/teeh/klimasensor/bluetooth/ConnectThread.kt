@@ -20,19 +20,24 @@ class ConnectThread(private val service: BluetoothService, private val device: B
 
     init {
         mmDevice = device
+        var tmp: BluetoothSocket? = null
         mSocketType = "InSecure"
 
         try {
-            mmSocket = mmDevice.createInsecureRfcommSocketToServiceRecord(BluetoothConstants.MY_UUID_INSECURE)
+            tmp = device.createInsecureRfcommSocketToServiceRecord(BluetoothConstants.MY_UUID_INSECURE)
 
         } catch (e: IOException) {
             Log.e(BluetoothConstants.TAG, "Socket Type: " + mSocketType + "create() failed", e)
         }
+        mmSocket = tmp!!
     }
 
     override fun run() {
         Log.i(BluetoothConstants.TAG, "BEGIN mConnectThread SocketType:" + mSocketType)
         name = "ConnectThread" + mSocketType
+
+        // Always cancel discovery because it will slow down a connection
+        service.adapter.cancelDiscovery()
 
         // Make a connection to the BluetoothSocket
         try {
@@ -52,7 +57,7 @@ class ConnectThread(private val service: BluetoothService, private val device: B
             connectionFailed()
             return
         }
-        connectionSuccessful(mmDevice)
+        //connectionSuccessful(mmDevice)
 
         // Start the connected thread
         service.connected(mmSocket, mmDevice, mSocketType)

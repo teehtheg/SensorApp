@@ -19,6 +19,7 @@ package com.teeh.klimasensor.bluetooth
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_CONNECTED
@@ -127,7 +128,7 @@ class BluetoothService(private val mHandler: Handler) {
 
         // Cancel the thread that completed the connection
         if (mConnectThread != null) {
-            mConnectThread!!.cancel()
+            //mConnectThread!!.cancel()
             mConnectThread = null
         }
 
@@ -145,8 +146,15 @@ class BluetoothService(private val mHandler: Handler) {
 
         // Start the thread to manage the connection and perform transmissions
         mConnectedThread = ConnectedThread(this, socket)
-        mConnectedThread!!.start()
+
+        val msg = handler.obtainMessage(BluetoothConstants.MESSAGE_DEVICE_NAME)
+        val bundle = Bundle()
+        bundle.putString(BluetoothConstants.DEVICE_NAME, device.name)
+        msg.data = bundle
+        handler.sendMessage(msg)
+
         state = STATE_CONNECTED
+        mConnectedThread!!.start()
     }
 
     /**
@@ -181,10 +189,15 @@ class BluetoothService(private val mHandler: Handler) {
      * @see ConnectedThread.write
      */
     fun write(out: ByteArray) {
+        // Create temporary object
+        var r: ConnectedThread? = null
+
         // Synchronize a copy of the ConnectedThread
         synchronized(this) {
             if (mState != STATE_CONNECTED) return
+            r = mConnectedThread
         }
-        mConnectedThread!!.write(out)
+
+        r!!.write(out)
     }
 }

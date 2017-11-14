@@ -8,7 +8,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.ArrayList
 
-/**
+/**§
  * This thread runs during a connection with a remote device.
  * It handles all incoming and outgoing transmissions.
  */
