@@ -21,7 +21,6 @@ class DataVisualizerEditorActivity : BaseActivity() {
 
     private lateinit var rangeSeekbar: CrystalRangeSeekbar
     private lateinit var tsTypeSpinner: Spinner
-    private lateinit var sensorTs: SensorTs
 
     private var minDateSlider: Float? = null
     private var maxDateSlider: Float? = null
@@ -41,8 +40,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
                 val minDate = minValue as Long + sliderOffset!!.toLong()
                 val maxDate = maxValue as Long + sliderOffset!!.toLong()
 
-                tvMin.text = DateUtils.toString(DateUtils.toDate(minDate))
-                tvMax.text = DateUtils.toString(DateUtils.toDate(maxDate))
+                tvMin.text = DateUtils.toString(DateUtils.toLocalDate(minDate))
+                tvMax.text = DateUtils.toString(DateUtils.toLocalDate(maxDate))
 
                 startDate = minDate
                 endDate = maxDate
@@ -74,12 +73,9 @@ class DataVisualizerEditorActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
-        // get range limits
-        sensorTs = TimeseriesService.instance.sensorTs
-
         // here we could use any other ValueType aswell..
-        startDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
-        endDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
+        startDate = DateUtils.toLong(TimeseriesService.instance.readFirstFromDB().timestamp)
+        endDate = DateUtils.toLong(TimeseriesService.instance.readLastFromDB().timestamp)
 
         sliderOffset = startDate!! + (endDate!! - startDate!!)/2f
 
@@ -108,8 +104,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
         super.onResume()
 
         // here we could use any other ValueType aswell..
-        startDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
-        endDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
+        startDate = DateUtils.toLong(TimeseriesService.instance.readFirstFromDB().timestamp)
+        endDate = DateUtils.toLong(TimeseriesService.instance.readLastFromDB().timestamp)
 
         sliderOffset = startDate!! + (endDate!! - startDate!!)/2f
 
@@ -134,6 +130,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
 
     fun showGraph(view: View) {
         val serverIntent = Intent(this, DataVisualizerActivity::class.java)
+
+        Log.i(TAG, "Show graph between " + DateUtils.toLocalDate(startDate!!) +"/"+ DateUtils.toDate(startDate!!) +"/"+ startDate + " and " + DateUtils.toLocalDate(endDate!!))
 
         val b = Bundle()
         b.putLong(DataVisualizerActivity.START_DATE, startDate!!)

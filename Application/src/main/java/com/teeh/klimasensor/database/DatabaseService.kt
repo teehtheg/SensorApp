@@ -320,6 +320,8 @@ class DatabaseService private constructor() {
         val result = getTsDataFromCursor(cursor)
         cursor.close()
 
+        Log.d(TAG, "Fetched: " + result)
+
         if (result.size == 1) {
             return result[0]
         }

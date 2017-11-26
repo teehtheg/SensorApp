@@ -68,12 +68,19 @@ class TimeseriesService private constructor() {
     }
 
     fun readFromDB(): List<TsEntry> {
-
         return DatabaseService.instance.allSensordata
     }
 
     fun writeToDB(list: List<String>) {
         DatabaseService.instance.addNewSensordata(list)
+    }
+
+    fun readFirstFromDB(): TsEntry {
+        return DatabaseService.instance.oldestEntry
+    }
+
+    fun readLastFromDB(): TsEntry {
+        return DatabaseService.instance.latestEntry
     }
 
     ////////////////////////////

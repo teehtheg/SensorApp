@@ -300,13 +300,13 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Update entry"
+                android:text="Update"
                 android:onClick="updateSensordata" />
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create entry"
+                android:text="Create"
                 android:onClick="createSensordata" />
 
         </LinearLayout>
