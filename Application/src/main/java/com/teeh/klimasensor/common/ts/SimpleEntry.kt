@@ -1,5 +1,5 @@
 package com.teeh.klimasensor.common.ts
 
-import java.util.Date
+import java.time.LocalDateTime
 
-data class SimpleEntry(val type: ValueType, val value: Double?, val timestamp: Date)
+data class SimpleEntry(val type: ValueType, val value: Double?, val timestamp: LocalDateTime)

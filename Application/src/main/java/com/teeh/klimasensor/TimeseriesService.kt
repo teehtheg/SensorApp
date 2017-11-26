@@ -49,12 +49,12 @@ class TimeseriesService private constructor() {
             return getSensorTs(list, true)
         }
 
-    fun getSensorTs(startDate: Date, endDate: Date): SensorTs {
+    fun getSensorTs(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
         val list = readRangeFromDB(startDate, endDate)
         return getSensorTs(list, false)
     }
 
-    fun getSensorTsReduced(startDate: Date, endDate: Date): SensorTs {
+    fun getSensorTsReduced(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
         val list = readRangeFromDB(startDate, endDate)
         return getSensorTs(list, true)
     }
@@ -63,7 +63,7 @@ class TimeseriesService private constructor() {
     // Database stuff //
     ////////////////////
 
-    fun readRangeFromDB(startDate: Date, endDate: Date): List<TsEntry> {
+    fun readRangeFromDB(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
         return DatabaseService.instance.getAllSensordataRange(startDate, endDate)
     }
 

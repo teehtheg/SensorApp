@@ -22,6 +22,7 @@ import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.common.utils.TsUtil
 
 import com.teeh.klimasensor.common.utils.CurveFittingUtil
+import java.time.LocalDateTime
 
 import java.util.*
 
@@ -52,8 +53,8 @@ class DataVisualizerActivity : BaseActivity() {
     private lateinit var sensorTs: SensorTs
     private lateinit var graph: GraphView
 
-    private lateinit var startDate: Date
-    private lateinit var endDate: Date
+    private lateinit var startDate: LocalDateTime
+    private lateinit var endDate: LocalDateTime
     private var dataType: Int = 0
 
     //    public class TsType {
@@ -81,8 +82,8 @@ class DataVisualizerActivity : BaseActivity() {
 
         // Extract settings
         if (b != null) {
-            startDate = DateUtils.toDate(b.getLong(START_DATE))
-            endDate = DateUtils.toDate(b.getLong(END_DATE))
+            startDate = DateUtils.toLocalDate(b.getLong(START_DATE))
+            endDate = DateUtils.toLocalDate(b.getLong(END_DATE))
             dataType = b.getInt(DATA_TYPE)
         }
 

@@ -199,7 +199,7 @@ class DatabaseActivity : BaseActivity() {
     private fun showTsEntry(entry: TsEntry) {
         shownEntry = entry
 
-        tsEntryTimestampLong.setText(entry.timestamp.time.toString())
+        tsEntryTimestampLong.setText(DateUtils.toLong(entry.timestamp).toString())
         tsEntryTimestamp.setText(DateUtils.toString(entry.timestamp))
         tsEntryTemperature.setText(entry.temperature.toString())
         tsEntryRealTemperature.setText(if (entry.realTemperature != null) entry.realTemperature.toString() else "null")
@@ -216,7 +216,7 @@ class DatabaseActivity : BaseActivity() {
 
         try {
             shownEntry = TsEntry(shownEntry.id,
-                    DateUtils.toDate(ts),
+                    DateUtils.toLocalDate(ts),
                     java.lang.Double.valueOf(humid),
                     java.lang.Double.valueOf(temp),
                     java.lang.Double.valueOf(press),

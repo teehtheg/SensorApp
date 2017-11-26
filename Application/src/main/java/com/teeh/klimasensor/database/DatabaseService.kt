@@ -17,6 +17,7 @@ import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
 import org.jetbrains.anko.doAsync
+import java.time.LocalDateTime
 
 class DatabaseService private constructor() {
 
@@ -97,7 +98,7 @@ class DatabaseService private constructor() {
         dbHelper.close()
     }
 
-    fun getAllSensordataRange(startDate: Date, endDate: Date): List<TsEntry> {
+    fun getAllSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
 
         val cursor = readableDB.rawQuery("SELECT * FROM " + KlimasensorEntry.TABLE_NAME +
                 " WHERE " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " BETWEEN " + DateUtils.toLong(startDate) + " AND " + DateUtils.toLong(endDate) +
@@ -116,7 +117,7 @@ class DatabaseService private constructor() {
             val fields = line.split(",".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
             try {
-                val d = DateUtils.toDate(fields[0])
+                val d = DateUtils.toLocalDate(fields[0])
                 val h = java.lang.Double.valueOf(fields[1])
                 val t = java.lang.Double.valueOf(fields[2])
                 val p = java.lang.Double.valueOf(fields[3])
@@ -291,7 +292,7 @@ class DatabaseService private constructor() {
                 }
 
                 val entry = TsEntry(id,
-                        DateUtils.toDate(timestamp),
+                        DateUtils.toLocalDate(timestamp),
                         humidity,
                         temperature,
                         pressure,
@@ -328,7 +329,7 @@ class DatabaseService private constructor() {
         }
         else {
             Log.w(TAG, "Database is empty.")
-            return TsEntry(0, Date(0), null, null, null)
+            return TsEntry(0, LocalDateTime.of(0, 0, 0, 0, 0), null, null, null)
         }
     }
 }

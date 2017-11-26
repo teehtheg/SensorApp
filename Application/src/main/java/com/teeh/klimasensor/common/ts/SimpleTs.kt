@@ -2,12 +2,14 @@ package com.teeh.klimasensor.common.ts
 
 import com.teeh.klimasensor.common.utils.CalcUtil
 import com.teeh.klimasensor.common.utils.DateUtils
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 import java.util.Date
 import java.util.HashMap
 
 class SimpleTs(val ts: List<SimpleEntry>) {
-    private val dateMap: MutableMap<Date, Int>
+    private val dateMap: MutableMap<LocalDateTime, Int>
 
     val valueList: List<Double?>
         get() = ts.map { x -> x.value }
@@ -52,10 +54,10 @@ class SimpleTs(val ts: List<SimpleEntry>) {
             }
         }
 
-    val latestTimestamp: Date
+    val latestTimestamp: LocalDateTime
         get() = latestEntry.timestamp
 
-    val firstTimestamp: Date
+    val firstTimestamp: LocalDateTime
         get() = ts[0].timestamp
 
     val latestTimestampString: String
@@ -70,16 +72,12 @@ class SimpleTs(val ts: List<SimpleEntry>) {
         ts.forEachIndexed { index, simpleEntry -> dateMap.put(simpleEntry.timestamp, index) }
     }
 
-    fun getEntry(d: Date): SimpleEntry? {
+    fun getEntry(d: LocalDateTime): SimpleEntry? {
         val index = dateMap[d]
         return if (index != null && index < ts.size) {
             ts[index]
         } else {
             null
         }
-    }
-
-    companion object {
-        //val tsFormat = DateTimeFormatter.ofPattern(STRING_DATE_FORMAT)
     }
 }
