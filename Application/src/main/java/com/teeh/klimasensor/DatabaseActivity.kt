@@ -17,6 +17,7 @@ import com.teeh.klimasensor.common.utils.DateUtils
 
 class DatabaseActivity : BaseActivity() {
 
+    private lateinit var tsEntryTimestampLong: TextView
     private lateinit var tsEntryTimestamp: EditText
     private lateinit var tsEntryPressure: EditText
     private lateinit var tsEntryTemperature: EditText
@@ -30,6 +31,7 @@ class DatabaseActivity : BaseActivity() {
     private lateinit var seekBarText: TextView
     private lateinit var clearDataListener: View.OnClickListener
     private lateinit var updateDataListener: View.OnClickListener
+    private lateinit var deleteDataListener: View.OnClickListener
     private lateinit var createDataListener: View.OnClickListener
 
     private var currentIndex: Int? = null
@@ -78,6 +80,7 @@ class DatabaseActivity : BaseActivity() {
         tsEntryRealTemperature = findViewById<View>(R.id.tsentry_real_temp) as EditText
         tsEntryTemperature = findViewById<View>(R.id.tsentry_temp) as EditText
         tsEntryTimestamp = findViewById<View>(R.id.tsentry_timestamp) as EditText
+        tsEntryTimestampLong = findViewById<View>(R.id.tsentry_timestamp_long) as TextView
 
         dbNumEntries = findViewById<View>(R.id.db_num_entries) as TextView
         dbOldestEntry = findViewById<View>(R.id.db_oldest_entry) as TextView
@@ -97,6 +100,8 @@ class DatabaseActivity : BaseActivity() {
         updateDataListener = View.OnClickListener { updateSensordata() }
 
         createDataListener = View.OnClickListener { createSensordata() }
+
+        deleteDataListener = View.OnClickListener { deleteSensordata() }
 
     }
 
@@ -131,6 +136,14 @@ class DatabaseActivity : BaseActivity() {
         val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_warning, Snackbar.LENGTH_LONG)
 
         mySnackbar.setAction("YES", createDataListener)
+                .setActionTextColor(Color.GREEN)
+                .show()
+    }
+
+    fun deleteSensordata(v: View) {
+        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_warning, Snackbar.LENGTH_LONG)
+
+        mySnackbar.setAction("YES", deleteDataListener)
                 .setActionTextColor(Color.GREEN)
                 .show()
     }
@@ -171,9 +184,22 @@ class DatabaseActivity : BaseActivity() {
         snackbar.show()
     }
 
+    private fun deleteSensordata() {
+        val entry = readTsEntry()
+        val res = DatabaseService.instance.deleteEntry(entry)
+        val snackbar: Snackbar
+        if (res) {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_success, Snackbar.LENGTH_SHORT)
+        } else {
+            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_failure, Snackbar.LENGTH_SHORT)
+        }
+        snackbar.show()
+    }
+
     private fun showTsEntry(entry: TsEntry) {
         shownEntry = entry
 
+        tsEntryTimestampLong.setText(entry.timestamp.time.toString())
         tsEntryTimestamp.setText(DateUtils.toString(entry.timestamp))
         tsEntryTemperature.setText(entry.temperature.toString())
         tsEntryRealTemperature.setText(if (entry.realTemperature != null) entry.realTemperature.toString() else "null")
@@ -189,7 +215,7 @@ class DatabaseActivity : BaseActivity() {
         val press = tsEntryPressure.text.toString()
 
         try {
-            shownEntry = TsEntry(0,
+            shownEntry = TsEntry(shownEntry.id,
                     DateUtils.toDate(ts),
                     java.lang.Double.valueOf(humid),
                     java.lang.Double.valueOf(temp),

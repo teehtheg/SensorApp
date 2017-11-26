@@ -17,18 +17,15 @@ import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.ValueType
 import com.teeh.klimasensor.common.utils.DateUtils
 
-/**
- * Created by teeh on 21.06.2017.
- */
-
 class DataVisualizerEditorActivity : BaseActivity() {
 
     private lateinit var rangeSeekbar: CrystalRangeSeekbar
     private lateinit var tsTypeSpinner: Spinner
     private lateinit var sensorTs: SensorTs
 
-    private var minDate: Long? = null
-    private var maxDate: Long? = null
+    private var minDateSlider: Float? = null
+    private var maxDateSlider: Float? = null
+    private var sliderOffset: Float? = null
     private var startDate: Long? = null
     private var endDate: Long? = null
     private var tsType: Int = 0
@@ -40,11 +37,15 @@ class DataVisualizerEditorActivity : BaseActivity() {
             internal val tvMax = findViewById<View>(R.id.upperDate) as TextView
 
             override fun valueChanged(minValue: Number, maxValue: Number) {
-                tvMin.text = DateUtils.toString(DateUtils.toDate(minValue as Long))
-                tvMax.text = DateUtils.toString(DateUtils.toDate(maxValue as Long))
 
-                startDate = minValue
-                endDate = maxValue
+                val minDate = minValue as Long + sliderOffset!!.toLong()
+                val maxDate = maxValue as Long + sliderOffset!!.toLong()
+
+                tvMin.text = DateUtils.toString(DateUtils.toDate(minDate))
+                tvMax.text = DateUtils.toString(DateUtils.toDate(maxDate))
+
+                startDate = minDate
+                endDate = maxDate
             }
 
         }
@@ -75,17 +76,23 @@ class DataVisualizerEditorActivity : BaseActivity() {
 
         // get range limits
         sensorTs = TimeseriesService.instance.sensorTs
+
         // here we could use any other ValueType aswell..
-        maxDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
-        minDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        startDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        endDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
+
+        sliderOffset = startDate!! + (endDate!! - startDate!!)/2f
+
+        minDateSlider = startDate!!.toFloat() - sliderOffset!!
+        maxDateSlider = endDate!!.toFloat() - sliderOffset!!
 
         // setup range seekbar
         rangeSeekbar = findViewById<View>(R.id.rangeSeekbar) as CrystalRangeSeekbar
         rangeSeekbar.setOnRangeSeekbarChangeListener(onRangeSeekbarChangeListener)
-        rangeSeekbar.setMinValue(minDate!!.toFloat())
-                .setMaxValue(maxDate!!.toFloat())
-                .setMinStartValue(minDate!!.toFloat())
-                .setMaxStartValue(maxDate!!.toFloat())
+        rangeSeekbar.setMinValue(minDateSlider!!)
+                .setMaxValue(maxDateSlider!!)
+                .setMinStartValue(minDateSlider!!)
+                .setMaxStartValue(maxDateSlider!!)
                 .setDataType(CrystalSeekbar.DataType.LONG)
                 .apply()
 
@@ -100,13 +107,19 @@ class DataVisualizerEditorActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        maxDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
-        minDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        // here we could use any other ValueType aswell..
+        startDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        endDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
 
-        rangeSeekbar.setMinValue(minDate!!.toFloat())
-                .setMaxValue(maxDate!!.toFloat())
-                .setMinStartValue(minDate!!.toFloat())
-                .setMaxStartValue(maxDate!!.toFloat())
+        sliderOffset = startDate!! + (endDate!! - startDate!!)/2f
+
+        minDateSlider = startDate!!.toFloat() - sliderOffset!!
+        maxDateSlider = endDate!!.toFloat() - sliderOffset!!
+
+        rangeSeekbar.setMinValue(minDateSlider!!)
+                .setMaxValue(maxDateSlider!!)
+                .setMinStartValue(minDateSlider!!)
+                .setMaxStartValue(maxDateSlider!!)
                 .setDataType(CrystalSeekbar.DataType.LONG)
                 .apply()
     }

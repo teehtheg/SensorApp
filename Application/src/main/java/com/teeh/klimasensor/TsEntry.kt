@@ -16,4 +16,8 @@ class TsEntry(val id: Int, val timestamp: Date, val humidity: Double?, val tempe
 
         this.realTemperature = realTemperature
     }
+
+    override fun toString():String {
+        return "TsEntry[id: '" + id + "', timestamp: '" + timestamp + "']";
+    }
 }

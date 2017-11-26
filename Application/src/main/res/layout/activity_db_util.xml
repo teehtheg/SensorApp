@@ -109,6 +109,24 @@
                     android:padding="3dip" />
 
                 <TextView
+                    android:id="@+id/tsentry_timestamp_long"
+                    android:gravity="end"
+                    android:layout_width="0dp"
+                    android:layout_weight=".25" />
+
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+            </TableRow>
+
+            <TableRow android:layout_marginTop="0dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:text=""
+                    android:padding="3dip" />
+
+                <TextView
                     android:layout_column="1"
                     android:text="Timestamp"
                     android:layout_width="0dp"
@@ -285,6 +303,12 @@
                 android:text="Update entry"
                 android:onClick="updateSensordata" />
 
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create entry"
+                android:onClick="createSensordata" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -294,8 +318,8 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Create entry"
-                android:onClick="createSensordata" />
+                android:text="Delete entry"
+                android:onClick="deleteSensordata" />
 
             <Button
                 android:id="@+id/button_clear_data"

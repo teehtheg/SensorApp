@@ -6,6 +6,7 @@
         <item>Humidity</item>
         <item>TempCombined</item>
         <item>Temp+Humidity</item>
+        <item>Temp+MA</item>
     </string-array>
 
 </resources>

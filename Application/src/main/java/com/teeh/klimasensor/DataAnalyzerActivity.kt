@@ -1,6 +1,7 @@
 package com.teeh.klimasensor
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
@@ -15,12 +16,19 @@ import java.util.HashMap
 import java.util.Locale
 
 import com.teeh.klimasensor.database.DatabaseService
+import com.teeh.klimasensor.weather.CurrentWeather
+import com.teeh.klimasensor.weather.OutsideWeatherService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class DataAnalyzerActivity : BaseActivity() {
 
     private lateinit var sensorTs: SensorTs
 
     private lateinit var nf: NumberFormat
+
+    private lateinit var outside_temp: TextView
 
     private lateinit var humidity_lat: TextView
     private lateinit var humidity_min: TextView
@@ -46,6 +54,7 @@ class DataAnalyzerActivity : BaseActivity() {
     private val tsTypes: List<ValueType> = listOf(ValueType.HUMIDITY, ValueType.TEMPERATURE, ValueType.PRESSURE)
     private val typeDisplayMapping = HashMap<ValueType, List<TextView>>()
 
+    private lateinit var weatherService:OutsideWeatherService
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,10 +65,14 @@ class DataAnalyzerActivity : BaseActivity() {
     public override fun onStart() {
         super.onStart()
 
+        outside_temp = findViewById<TextView>(R.id.outside_temp)
+        weatherService = OutsideWeatherService.getInstance(this)
+        weatherService.getWeather(getWeatherCallback())
+
         nf = NumberFormat.getInstance(Locale.GERMAN)
         nf.maximumFractionDigits = 2
 
-        humidity_lat = findViewById<View>(R.id.humidity_lat) as TextView
+        humidity_lat = findViewById<TextView>(R.id.humidity_lat)
         humidity_min = findViewById<View>(R.id.humidity_min) as TextView
         humidity_max = findViewById<View>(R.id.humidity_max) as TextView
         humidity_avg = findViewById<View>(R.id.humidity_avg) as TextView
@@ -145,6 +158,26 @@ class DataAnalyzerActivity : BaseActivity() {
         if (success) {
             realTempInput.setText("")
             Toast.makeText(this, "Value added!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun getWeatherCallback():Callback<CurrentWeather> {
+        return object : Callback<CurrentWeather> {
+            override fun onResponse(call: Call<CurrentWeather>, response: Response<CurrentWeather>) {
+                if (response.isSuccessful) {
+                    Log.i(TAG, response.toString())
+                    // tasks available
+                    val weather = response.body()!!
+                    outside_temp.setText(nf.format(weather.main!!.temp!! - 273.15))
+                } else {
+                    // error response, no access to resource?
+                }
+            }
+
+            override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                // something went completely south (like no internet connection)
+                Log.d("Error", t.message)
+            }
         }
     }
 

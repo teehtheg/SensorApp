@@ -1,5 +1,7 @@
 package com.teeh.klimasensor.common.utils
 
+import java.util.ArrayList
+
 object CalcUtil {
 
     fun <T : Number?> sum(collection: Collection<T>): Double {
@@ -10,6 +12,14 @@ object CalcUtil {
         }
 
         return sum
+    }
+
+    fun normalize(collection: Collection<Double>, normalization: Double?): List<Double> {
+        val result = ArrayList<Double>()
+        for (entry in collection) {
+            result.add(entry / normalization!!)
+        }
+        return result
     }
 
 }

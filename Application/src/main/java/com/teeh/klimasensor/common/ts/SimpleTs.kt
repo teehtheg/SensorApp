@@ -61,6 +61,9 @@ class SimpleTs(val ts: List<SimpleEntry>) {
     val latestTimestampString: String
         get() = DateUtils.toString(latestTimestamp)
 
+    val firstTimestampString: String
+        get() = DateUtils.toString(firstTimestamp)
+
 
     init {
         dateMap = HashMap()

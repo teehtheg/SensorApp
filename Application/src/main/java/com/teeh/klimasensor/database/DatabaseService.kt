@@ -13,6 +13,7 @@ import java.util.ArrayList
 import java.util.Date
 
 import com.teeh.klimasensor.TsEntry
+import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
 import org.jetbrains.anko.doAsync
@@ -94,12 +95,6 @@ class DatabaseService private constructor() {
         readableDB.close()
         writableDB.close()
         dbHelper.close()
-    }
-
-    fun clearSensorData(): Long {
-        return writableDB.delete(
-                KlimasensorEntry.TABLE_NAME, "1", null
-        ).toLong()
     }
 
     fun getAllSensordataRange(startDate: Date, endDate: Date): List<TsEntry> {
@@ -196,6 +191,29 @@ class DatabaseService private constructor() {
         return result
     }
 
+    fun clearSensorData(): Long {
+        return writableDB.delete(
+                KlimasensorEntry.TABLE_NAME, "1", null
+        ).toLong()
+    }
+
+    fun deleteEntries(list: List<TsEntry>): Long {
+        var result: Long = 0
+        for (entry in list) {
+            val whereClause = KlimasensorEntry.COLUMN_NAME_ID + " = ?"
+            val whereArgs = arrayOf(entry.id.toString())
+
+            val res = writableDB.delete(
+                    KlimasensorEntry.TABLE_NAME,
+                    whereClause,
+                    whereArgs
+            ).toLong()
+            result = result + res
+
+        }
+        return result
+    }
+
     fun updateEntry(entry: TsEntry): Boolean {
         val list = ArrayList<TsEntry>()
         list.add(entry)
@@ -210,6 +228,17 @@ class DatabaseService private constructor() {
         list.add(entry)
         val res = createEntries(list)
         return if (res == -1L) {
+            true
+        } else false
+    }
+
+    fun deleteEntry(entry: TsEntry): Boolean {
+        val list = ArrayList<TsEntry>()
+        list.add(entry)
+        Log.i(BaseActivity.TAG, "delete: deleting" + entry.id)
+        val res = deleteEntries(list)
+        Log.i(BaseActivity.TAG, "delete: " + res.toString())
+        return if (res == 1L) {
             true
         } else false
     }
@@ -268,6 +297,8 @@ class DatabaseService private constructor() {
                         pressure,
                         realTemp)
                 result.add(entry)
+
+                //Log.d(TAG, entry.toString())
             }
 
             count = count + 1

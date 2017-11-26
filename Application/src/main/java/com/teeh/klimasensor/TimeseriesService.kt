@@ -27,7 +27,7 @@ class TimeseriesService private constructor() {
     private object Holder { val INSTANCE = TimeseriesService() }
 
     companion object {
-        private val NUM_ENTRIES = 500
+        private val NUM_ENTRIES = 2000
         private val TAG = "TimeseriesService"
 
         val instance: TimeseriesService by lazy { Holder.INSTANCE }
@@ -142,20 +142,33 @@ class TimeseriesService private constructor() {
     /////////////////////
 
     // reduce the number of TsEntries to NUM_ENTRIES
-    private fun reduceTo(list: List<TsEntry>, reduceTo: Int?): List<TsEntry> {
+    private fun reduceTo(list: List<TsEntry>, reduceTo: Int): List<TsEntry> {
         val num = list.size
-        val toRemove = reduceTo!! - num
+        val toRemove = num - reduceTo
 
-        if (toRemove > 0) {
+        if (toRemove <= 0) {
             return list
         } else {
-            val ith = num / toRemove
-            val newList = ArrayList<TsEntry>()
-            for (i in 0 until num) {
-                if (i % ith != 0) {
-                    newList.add(list[i])
+            val percentToRemove = toRemove / num.toDouble()
+            var newList = ArrayList<TsEntry>()
+
+            if (percentToRemove > 0.5) {
+                val ith = num / reduceTo
+                for (i in 0 until num) {
+                    if (i % ith == 0) {
+                        newList.add(list[i])
+                    }
                 }
             }
+            else {
+                val ith = num / toRemove
+                for (i in 0 until num) {
+                    if (i % ith != 0) {
+                        newList.add(list[i])
+                    }
+                }
+            }
+
             return newList
         }
     }
@@ -164,6 +177,7 @@ class TimeseriesService private constructor() {
         var list = list
         if (reduced) {
             list = reduceTo(list, NUM_ENTRIES)
+            Log.d(TAG, "Reduced ts to " + list.size + " entries.")
         }
         return SensorTsMapper.createSensorTs(list)
     }
