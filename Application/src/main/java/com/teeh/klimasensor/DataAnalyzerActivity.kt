@@ -6,6 +6,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.android.gms.tasks.Tasks.await
+import com.teeh.klimasensor.R.id.outside_temp
 
 import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.ts.SensorTs
@@ -18,6 +20,9 @@ import java.util.Locale
 import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import org.jetbrains.anko.doAsync
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,8 +59,6 @@ class DataAnalyzerActivity : BaseActivity() {
     private val tsTypes: List<ValueType> = listOf(ValueType.HUMIDITY, ValueType.TEMPERATURE, ValueType.PRESSURE)
     private val typeDisplayMapping = HashMap<ValueType, List<TextView>>()
 
-    private lateinit var weatherService:OutsideWeatherService
-
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_data_analyzer)
@@ -66,8 +69,6 @@ class DataAnalyzerActivity : BaseActivity() {
         super.onStart()
 
         outside_temp = findViewById<TextView>(R.id.outside_temp)
-        weatherService = OutsideWeatherService.getInstance(this)
-        weatherService.getWeather(getWeatherCallback())
 
         nf = NumberFormat.getInstance(Locale.GERMAN)
         nf.maximumFractionDigits = 2
@@ -104,10 +105,15 @@ class DataAnalyzerActivity : BaseActivity() {
 
     public override fun onResume() {
         super.onResume()
-        sensorTs = TimeseriesService.instance.sensorTs
-        initializeKeyfigures()
 
-        temperature_dev.text = nf.format(sensorTs.avgTempDeviation)
+        val weatherService = OutsideWeatherService(this)
+        weatherService.getWeather(getWeatherCallback())
+
+        async {
+            sensorTs = TimeseriesService.instance.sensorTsAsync.await()
+            initializeKeyfigures()
+            temperature_dev.text = nf.format(sensorTs.avgTempDeviation)
+        }
     }
 
 

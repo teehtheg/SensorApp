@@ -17,6 +17,10 @@ import java.util.Arrays
 import java.util.Date
 
 import android.provider.Telephony.Mms.Part.FILENAME
+import com.google.android.gms.tasks.Tasks.await
+
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Created by teeh on 30.12.2016.
@@ -41,6 +45,11 @@ class TimeseriesService private constructor() {
         get() {
             val list = readFromDB()
             return getSensorTs(list, false)
+        }
+
+    val sensorTsAsync: Deferred<SensorTs>
+        get() = async {
+            getSensorTs(readFromDB(), false)
         }
 
     val sensorTsReduced: SensorTs

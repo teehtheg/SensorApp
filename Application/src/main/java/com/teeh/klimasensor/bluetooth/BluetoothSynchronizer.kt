@@ -24,6 +24,7 @@ import com.teeh.klimasensor.R
 import com.teeh.klimasensor.SettingsActivity
 import com.teeh.klimasensor.TimeseriesService
 import com.teeh.klimasensor.common.ts.ValueType
+import com.teeh.klimasensor.common.utils.DateUtils
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
@@ -195,12 +196,7 @@ class BluetoothSynchronizer : Fragment() {
 
             return
         }
-
-        val latestTs = TimeseriesService.instance
-                .sensorTs
-                .getTs(ValueType.TEMPERATURE)
-                .latestTimestampString
-
+        val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
         val msg = "getDataUpdate;" + latestTs
         mChatService!!.write(msg.toByteArray())
     }

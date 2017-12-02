@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Created by teeh on 23.07.2017.
  */
 
-class OutsideWeatherService private constructor(private val context: Context) {
+class OutsideWeatherService(private val context: Context) {
 
     private lateinit var weatherCall:Call<CurrentWeather>
     private lateinit var configService:ConfigService
@@ -26,7 +26,7 @@ class OutsideWeatherService private constructor(private val context: Context) {
     init {
 
         val retrofit = Retrofit.Builder()
-                .baseUrl("http://api.openweathermap.org/data/2.5/")
+                .baseUrl(API)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 
@@ -44,24 +44,9 @@ class OutsideWeatherService private constructor(private val context: Context) {
         weatherCall.enqueue(callback)
     }
 
-
     companion object {
-
         private val TAG = "OutsideWeatherService"
-
         private val API = "http://api.openweathermap.org/data/2.5/"
-        //private static final String API = "http://api.openweathermap.org/data/2.5/weather";
-
-        private var serviceInstance: OutsideWeatherService? = null
-
-        fun getInstance(context: Context): OutsideWeatherService {
-            if (serviceInstance == null) {
-                serviceInstance = OutsideWeatherService(context)
-            }
-            return serviceInstance!!
-        }
     }
 
-
-    //http://api.openweathermap.org/data/2.5/weather?id=2657896&APPID=f72974bcbf4a5febe634d6ac606ec57d
 }
