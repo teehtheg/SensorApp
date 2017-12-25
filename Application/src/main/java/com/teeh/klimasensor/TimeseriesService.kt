@@ -18,6 +18,7 @@ import java.util.Date
 
 import android.provider.Telephony.Mms.Part.FILENAME
 import com.google.android.gms.tasks.Tasks.await
+import kotlinx.coroutines.experimental.CommonPool
 
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -41,6 +42,7 @@ class TimeseriesService private constructor() {
     // Loading Timeseries Data //
     /////////////////////////////
 
+    @Deprecated("Use Async functions instead")
     val sensorTs: SensorTs
         get() {
             val list = readFromDB()
@@ -48,24 +50,44 @@ class TimeseriesService private constructor() {
         }
 
     val sensorTsAsync: Deferred<SensorTs>
-        get() = async {
+        get() = async(CommonPool) {
             getSensorTs(readFromDB(), false)
         }
 
+    @Deprecated("Use Async functions instead")
     val sensorTsReduced: SensorTs
         get() {
             val list = readFromDB()
             return getSensorTs(list, true)
         }
 
+    val sensorTsReducedAsync: Deferred<SensorTs>
+        get() = async(CommonPool) {
+            getSensorTs(readFromDB(), true)
+        }
+
+    @Deprecated("Use Async functions instead")
     fun getSensorTs(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
         val list = readRangeFromDB(startDate, endDate)
         return getSensorTs(list, false)
     }
 
+    @Deprecated("Use Async functions instead")
     fun getSensorTsReduced(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
         val list = readRangeFromDB(startDate, endDate)
         return getSensorTs(list, true)
+    }
+
+    fun getSensorTsAsync(startDate: LocalDateTime, endDate: LocalDateTime): Deferred<SensorTs> {
+        return async(CommonPool) {
+            getSensorTs(readRangeFromDB(startDate, endDate), false)
+        }
+    }
+
+    fun getSensorTsReducedAsync(startDate: LocalDateTime, endDate: LocalDateTime): Deferred<SensorTs> {
+        return async(CommonPool) {
+            getSensorTs(readRangeFromDB(startDate, endDate), true)
+        }
     }
 
     ////////////////////
@@ -76,8 +98,14 @@ class TimeseriesService private constructor() {
         return DatabaseService.instance.getAllSensordataRange(startDate, endDate)
     }
 
+    fun readRangeFromDBReduced(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
+        val numEntries = DatabaseService.instance.numberOfEntries
+        val leaveOut = numEntries/2000
+        return DatabaseService.instance.getSensordataRange(startDate, endDate, leaveOut)
+    }
+
     fun readFromDB(): List<TsEntry> {
-        return DatabaseService.instance.allSensordata
+        return DatabaseService.instance.getAllSensordata()
     }
 
     fun writeToDB(list: List<String>) {

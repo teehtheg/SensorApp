@@ -14,6 +14,8 @@ import com.teeh.klimasensor.database.DatabaseService
 
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 
 class DatabaseActivity : BaseActivity() {
 
@@ -69,8 +71,11 @@ class DatabaseActivity : BaseActivity() {
 
         seekBar = findViewById<View>(R.id.seek_bar) as SeekBar
         seekBarText = findViewById<View>(R.id.seek_bar_text) as TextView
-        seekBarSteps = DatabaseService.instance.allSensordata
-        seekBar.max = seekBarSteps.size - 1
+
+        async(UI) {
+            seekBarSteps = DatabaseService.instance.getAllSensordataAsync().await()
+            seekBar.max = seekBarSteps.size - 1
+        }
         currentIndex = 0
 
         seekBar.setOnSeekBarChangeListener(onSeekBarChangeListener)

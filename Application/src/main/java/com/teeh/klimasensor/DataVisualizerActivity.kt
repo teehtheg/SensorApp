@@ -1,9 +1,11 @@
 package com.teeh.klimasensor
 
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
+import android.view.View
 
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.BaseSeries
@@ -22,14 +24,11 @@ import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.common.utils.TsUtil
 
 import com.teeh.klimasensor.common.utils.CurveFittingUtil
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import java.time.LocalDateTime
 
 import java.util.*
-
-
-/**
- * Created by teeh on 30.12.2016.
- */
 
 class DataVisualizerActivity : BaseActivity() {
 
@@ -69,7 +68,6 @@ class DataVisualizerActivity : BaseActivity() {
         setContentView(R.layout.activity_data_visualizer)
     }
 
-
     public override fun onStart() {
         super.onStart()
 
@@ -87,23 +85,40 @@ class DataVisualizerActivity : BaseActivity() {
             dataType = b.getInt(DATA_TYPE)
         }
 
+        Log.i(TAG, "Show graph from $startDate until $endDate for dataType $dataType")
+
         // Fetch Timeseries data
-        sensorTs = service.getSensorTsReduced(startDate, endDate)
+        async(UI) {
+            sensorTs = service.getSensorTsReducedAsync(startDate, endDate).await()
 
-        // populate colors
-        val colorsArray = arrayOf(Color.BLACK, Color.BLUE, Color.GREEN, Color.RED, Color.CYAN, Color.YELLOW, Color.MAGENTA)
-        colors = ArrayList(Arrays.asList(*colorsArray))
+            Log.i(TAG, "Sucessfully fetched the following entries: ${sensorTs.getTs(ValueType.TEMPERATURE).ts}")
 
-        // Compose graph
-        when (dataType) {
-            0 -> createSingleGraph(sensorTs.getTs(ValueType.TEMPERATURE))
-            1 -> createSingleGraph(sensorTs.getTs(ValueType.PRESSURE))
-            2 -> createSingleGraph(sensorTs.getTs(ValueType.HUMIDITY))
-            3 -> createTempMultiGraph()
-            4 -> createUniformMultiGraph(sensorTs.getTs(ValueType.HUMIDITY),
-                    sensorTs.getTs(ValueType.TEMPERATURE))
-            5 -> createGraphAndFit(sensorTs.getTs(ValueType.TEMPERATURE))
+            // populate colors
+            val colorsArray = arrayOf(Color.BLACK, Color.BLUE, Color.GREEN, Color.RED, Color.CYAN, Color.YELLOW, Color.MAGENTA)
+            colors = ArrayList(Arrays.asList(*colorsArray))
+
+            // Compose graph
+            when (dataType) {
+                0 -> createSingleGraph(sensorTs.getTs(ValueType.TEMPERATURE))
+                1 -> createSingleGraph(sensorTs.getTs(ValueType.PRESSURE))
+                2 -> createSingleGraph(sensorTs.getTs(ValueType.HUMIDITY))
+                3 -> createTempMultiGraph()
+                4 -> createUniformMultiGraph(sensorTs.getTs(ValueType.HUMIDITY),
+                        sensorTs.getTs(ValueType.TEMPERATURE))
+                5 -> createGraphAndFit(sensorTs.getTs(ValueType.TEMPERATURE))
+            }
         }
+    }
+
+    public override fun onDestroy() {
+        super.onDestroy()
+
+        graph.removeAllSeries()
+        graph.visibility = View.GONE
+    }
+
+    public override fun onResume() {
+        super.onResume()
     }
 
     private fun createSingleGraph(ts: SimpleTs) {
@@ -188,14 +203,6 @@ class DataVisualizerActivity : BaseActivity() {
         return true
     }
 
-    public override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    public override fun onResume() {
-        super.onResume()
-    }
-
     //////////////////////
     // Helper functions //
     //////////////////////
@@ -224,6 +231,8 @@ class DataVisualizerActivity : BaseActivity() {
 
             graph.addSeries(series)
         }
+
+        graph.visibility = View.VISIBLE
     }
 
     private fun initializeGraph() {

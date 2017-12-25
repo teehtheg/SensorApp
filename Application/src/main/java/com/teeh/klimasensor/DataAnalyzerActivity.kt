@@ -20,6 +20,7 @@ import java.util.Locale
 import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.jetbrains.anko.doAsync
@@ -109,7 +110,7 @@ class DataAnalyzerActivity : BaseActivity() {
         val weatherService = OutsideWeatherService(this)
         weatherService.getWeather(getWeatherCallback())
 
-        async {
+        async(UI) {
             sensorTs = TimeseriesService.instance.sensorTsAsync.await()
             initializeKeyfigures()
             temperature_dev.text = nf.format(sensorTs.avgTempDeviation)

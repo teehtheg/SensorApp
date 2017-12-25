@@ -16,6 +16,9 @@ import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
 import java.time.LocalDateTime
 
@@ -51,34 +54,6 @@ class DatabaseService private constructor() {
     val latestEntry: TsEntry
         get() = getExtremalEntry(EXTREMUM_MAX, KlimasensorEntry.COLUMN_NAME_TIMESTAMP)
 
-    // Filter results WHERE "title" = 'My Title'
-    // String selection = FeedEntry.COLUMN_NAME_TITLE + " = ?";
-    // String[] selectionArgs = { "My Title" };
-    // How you want the results sorted in the resulting Cursor
-    //Long leaveOut = numEntries/1000;
-    val allSensordata: List<TsEntry>
-        get() {
-            val selection: String? = null
-            val selectionArgs: Array<String>? = null
-            val sortOrder = KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC"
-
-            val cursor = readableDB.query(
-                    KlimasensorEntry.TABLE_NAME,
-                    sensorDataProj,
-                    selection,
-                    selectionArgs, null, null,
-                    sortOrder
-            )
-
-            val numEntries = numberOfEntries
-            val leaveOut = 0L
-            Log.d(TAG, "Leaving out $leaveOut entries.")
-            val result = getTsDataFromCursor(cursor, leaveOut)
-            cursor.close()
-
-            return result
-        }
-
     ///////////////////////
     // Lifecycle methods //
     ///////////////////////
@@ -98,18 +73,48 @@ class DatabaseService private constructor() {
         dbHelper.close()
     }
 
-    fun getAllSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
+    fun getSensordata(leaveOut: Long): List<TsEntry> {
+        val selection: String? = null
+        val selectionArgs: Array<String>? = null
+        val sortOrder = KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC"
 
-        val cursor = readableDB.rawQuery("SELECT * FROM " + KlimasensorEntry.TABLE_NAME +
-                " WHERE " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " BETWEEN " + DateUtils.toLong(startDate) + " AND " + DateUtils.toLong(endDate) +
-                " ORDER BY " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC", null)
+        val cursor = readableDB.query(
+                KlimasensorEntry.TABLE_NAME,
+                sensorDataProj,
+                selection,
+                selectionArgs, null, null,
+                sortOrder
+        )
 
-
-        val leaveOut = 0L
         val result = getTsDataFromCursor(cursor, leaveOut)
         cursor.close()
 
         return result
+    }
+
+    fun getSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime, leaveOut: Long): List<TsEntry> {
+        val cursor = readableDB.rawQuery("SELECT * FROM " + KlimasensorEntry.TABLE_NAME +
+                " WHERE " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " BETWEEN " + DateUtils.toLong(startDate) + " AND " + DateUtils.toLong(endDate) +
+                " ORDER BY " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC", null)
+
+        val result = getTsDataFromCursor(cursor, leaveOut)
+        cursor.close()
+
+        return result
+    }
+
+    fun getAllSensordataAsync(): Deferred<List<TsEntry>> {
+        return async(CommonPool) {
+            getSensordata(0L)
+        }
+    }
+
+    fun getAllSensordata(): List<TsEntry> {
+        return getSensordata(0L)
+    }
+
+    fun getAllSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
+        return getSensordataRange(startDate, endDate, 0L)
     }
 
     fun addNewSensordata(list: List<String>) {
@@ -298,13 +303,11 @@ class DatabaseService private constructor() {
                         pressure,
                         realTemp)
                 result.add(entry)
-
-                //Log.d(TAG, entry.toString())
             }
 
             count = count + 1
         }
-        Log.d(TAG, "Read " + result.size + " entries from cursor")
+        Log.d(TAG, "Read ${result.size} entries from cursor (left out $leaveOut)")
         return result
     }
 
