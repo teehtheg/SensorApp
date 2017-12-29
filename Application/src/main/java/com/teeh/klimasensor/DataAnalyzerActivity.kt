@@ -6,8 +6,6 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.google.android.gms.tasks.Tasks.await
-import com.teeh.klimasensor.R.id.outside_temp
 
 import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.ts.SensorTs
@@ -22,8 +20,6 @@ import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import org.jetbrains.anko.doAsync
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -111,7 +107,7 @@ class DataAnalyzerActivity : BaseActivity() {
         weatherService.getWeather(getWeatherCallback())
 
         async(UI) {
-            sensorTs = TimeseriesService.instance.sensorTsAsync.await()
+            sensorTs = TimeseriesService.instance.sensorTs.await()
             initializeKeyfigures()
             temperature_dev.text = nf.format(sensorTs.avgTempDeviation)
         }

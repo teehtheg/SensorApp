@@ -42,26 +42,12 @@ class TimeseriesService private constructor() {
     // Loading Timeseries Data //
     /////////////////////////////
 
-    @Deprecated("Use Async functions instead")
-    val sensorTs: SensorTs
-        get() {
-            val list = readFromDB()
-            return getSensorTs(list, false)
-        }
-
-    val sensorTsAsync: Deferred<SensorTs>
+    val sensorTs: Deferred<SensorTs>
         get() = async(CommonPool) {
             getSensorTs(readFromDB(), false)
         }
 
-    @Deprecated("Use Async functions instead")
-    val sensorTsReduced: SensorTs
-        get() {
-            val list = readFromDB()
-            return getSensorTs(list, true)
-        }
-
-    val sensorTsReducedAsync: Deferred<SensorTs>
+    val sensorTsReduced: Deferred<SensorTs>
         get() = async(CommonPool) {
             getSensorTs(readFromDB(), true)
         }
@@ -86,7 +72,7 @@ class TimeseriesService private constructor() {
 
     fun getSensorTsReducedAsync(startDate: LocalDateTime, endDate: LocalDateTime): Deferred<SensorTs> {
         return async(CommonPool) {
-            getSensorTs(readRangeFromDB(startDate, endDate), true)
+            getSensorTs(readRangeFromDBReduced(startDate, endDate), false)
         }
     }
 
@@ -100,7 +86,7 @@ class TimeseriesService private constructor() {
 
     fun readRangeFromDBReduced(startDate: LocalDateTime, endDate: LocalDateTime): List<TsEntry> {
         val numEntries = DatabaseService.instance.numberOfEntries
-        val leaveOut = numEntries/2000
+        val leaveOut = numEntries/NUM_ENTRIES
         return DatabaseService.instance.getSensordataRange(startDate, endDate, leaveOut)
     }
 
@@ -169,7 +155,7 @@ class TimeseriesService private constructor() {
     fun appendToFile(update: List<String>, context: Context) {
         var file: MutableList<String>
         try {
-            file = ArrayList(instance!!.loadFromFile(context))
+            file = ArrayList(instance.loadFromFile(context))
         } catch (e: IOException) {
             Log.e(TAG, "No file found. Creating new one")
             file = ArrayList()
@@ -178,7 +164,7 @@ class TimeseriesService private constructor() {
         Log.d(TAG, "Appending " + update.size + " lines to file.")
 
         file.addAll(update)
-        instance!!.writeFile(file, context)
+        instance.writeFile(file, context)
     }
 
     /////////////////////

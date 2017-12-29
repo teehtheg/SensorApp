@@ -19,6 +19,7 @@ import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.ValueType
 import com.teeh.klimasensor.common.utils.DateUtils
+import com.teeh.klimasensor.database.DatabaseService
 
 import java.util.Date
 
@@ -30,7 +31,6 @@ class DataVisualizerEditorActivity : BaseActivity() {
 
     private lateinit var rangeSeekbar: CrystalRangeSeekbar
     private lateinit var tsTypeSpinner: Spinner
-    private lateinit var sensorTs: SensorTs
 
     private var minDate: Long? = null
     private var maxDate: Long? = null
@@ -78,17 +78,11 @@ class DataVisualizerEditorActivity : BaseActivity() {
     override fun onStart() {
         super.onStart()
 
-        // get range limits
-        sensorTs = TimeseriesService.instance.sensorTs
-        // here we could use any other ValueType aswell..
-        maxDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
-        minDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        maxDate = DateUtils.toLong(DatabaseService.instance.latestEntry.timestamp)
+        minDate = DateUtils.toLong(DatabaseService.instance.oldestEntry.timestamp)
 
         val minDateAdjusted = 0
         val maxDateAdjusted = maxDate!! - minDate!!
-
-        Log.i(TAG, "minDate: ${sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp}")
-        Log.i(TAG, "maxDate: ${sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp}")
 
         // setup range seekbar
         rangeSeekbar = findViewById<View>(R.id.rangeSeekbar) as CrystalRangeSeekbar
@@ -111,8 +105,8 @@ class DataVisualizerEditorActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
 
-        maxDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).latestTimestamp)
-        minDate = DateUtils.toLong(sensorTs.getTs(ValueType.TEMPERATURE).firstTimestamp)
+        maxDate = DateUtils.toLong(DatabaseService.instance.latestEntry.timestamp)
+        minDate = DateUtils.toLong(DatabaseService.instance.oldestEntry.timestamp)
 
         val minDateAdjusted = 0
         val maxDateAdjusted = maxDate!! - minDate!!
@@ -145,7 +139,6 @@ class DataVisualizerEditorActivity : BaseActivity() {
     }
 
     companion object {
-
         private val TAG = "DataVisualizerEditor"
     }
 
