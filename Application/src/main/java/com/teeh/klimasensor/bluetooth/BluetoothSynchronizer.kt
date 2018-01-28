@@ -97,7 +97,9 @@ class BluetoothSynchronizer : Fragment() {
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT)
         }
 
-        setupChat()
+        if (mBluetoothAdapter!!.isEnabled) {
+            setupChat()
+        }
 
         registerButtonListeners()
 
