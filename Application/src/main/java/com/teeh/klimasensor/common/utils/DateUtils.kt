@@ -44,6 +44,10 @@ object DateUtils {
         return LocalDateTime.parse(date, localDateFormat)
     }
 
+    fun toLocalDate(date: String, formatter: DateTimeFormatter): LocalDateTime {
+        return LocalDateTime.parse(date, formatter)
+    }
+
     fun toDate(date: Long): Date {
         return Date(date)
     }

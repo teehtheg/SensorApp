@@ -1,6 +1,7 @@
-package com.teeh.klimasensor.bluetooth
+package com.teeh.klimasensor
 
 import android.app.Activity
+import android.app.ProgressDialog.show
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
@@ -21,15 +22,27 @@ import android.widget.TextView
 
 import com.teeh.klimasensor.DatabaseActivity
 import com.teeh.klimasensor.R
+import com.teeh.klimasensor.R.id.outside_temp
 import com.teeh.klimasensor.SettingsActivity
 import com.teeh.klimasensor.TimeseriesService
+import com.teeh.klimasensor.bluetooth.BluetoothConstants
+import com.teeh.klimasensor.bluetooth.BluetoothService
+import com.teeh.klimasensor.bluetooth.DeviceListActivity
+import com.teeh.klimasensor.bluetooth.MessageHandler
 import com.teeh.klimasensor.common.ts.ValueType
 import com.teeh.klimasensor.common.utils.DateUtils
+import com.teeh.klimasensor.database.DatabaseService
+import com.teeh.klimasensor.rest.SensorData
+import com.teeh.klimasensor.rest.SensorDataService
+import com.teeh.klimasensor.rest.ServerStatus
+import com.teeh.klimasensor.weather.CurrentWeather
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
-/**
- * This fragment controls Bluetooth to communicate with other devices.
- */
-class BluetoothSynchronizer : Fragment() {
+class DataSynchronizer : Fragment() {
 
     /**
      * String buffer for outgoing messages
@@ -37,9 +50,10 @@ class BluetoothSynchronizer : Fragment() {
     private lateinit var mOutStringBuffer: StringBuffer
 
     /**
-     * Local Bluetooth adapter
+     * Adapters
      */
     private var mBluetoothAdapter: BluetoothAdapter? = null
+    private lateinit var mRestAdapter: SensorDataService
 
     /**
      * Member object for the chat services
@@ -74,6 +88,9 @@ class BluetoothSynchronizer : Fragment() {
         setHasOptionsMenu(true)
         // Get local Bluetooth adapter
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
+
+        // Get REST adapter
+        mRestAdapter = SensorDataService(context!!)
 
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
@@ -179,6 +196,9 @@ class BluetoothSynchronizer : Fragment() {
                     Snackbar.LENGTH_SHORT)
                     .show()
 
+            mRestAdapter.getStatus(getStatusCallback(
+                    { mRestAdapter.getSensorData(getSensorDataCallback()) }
+            ))
             return
         }
 
@@ -196,6 +216,9 @@ class BluetoothSynchronizer : Fragment() {
                     Snackbar.LENGTH_SHORT)
                     .show()
 
+            mRestAdapter.getStatus(getStatusCallback(
+                    { mRestAdapter.getSensorDataFrom(getSensorDataCallback()) }
+            ))
             return
         }
         val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
@@ -346,9 +369,64 @@ class BluetoothSynchronizer : Fragment() {
         return false
     }
 
+    fun getSensorDataCallback(): Callback<List<SensorData>> {
+        return object : Callback<List<SensorData>> {
+            override fun onResponse(call: Call<List<SensorData>>, response: Response<List<SensorData>>) {
+                if (response.isSuccessful) {
+                    if (!checkNotNull(response.body()).isEmpty()) {
+                        val update = response.body()!!
+                        TimeseriesService.instance.updateSensorTsAsync(update)
+                        Snackbar.make(activity!!.findViewById(android.R.id.content),
+                                update.size.toString() + " records downloaded",
+                                Snackbar.LENGTH_SHORT)
+                                .show()
+                    } else {
+                        Snackbar.make(activity!!.findViewById(android.R.id.content),
+                                R.string.download_empty,
+                                Snackbar.LENGTH_SHORT)
+                                .show()
+                    }
+                } else {
+                    Log.e(DataSynchronizer.TAG, "An error occured: " + response.errorBody())
+                }
+                return
+            }
+
+            override fun onFailure(call: Call<List<SensorData>>, t: Throwable) {
+                Log.e(DataSynchronizer.TAG, "Failure: " + t.message)
+            }
+        }
+    }
+
+    fun getStatusCallback(function: () -> Unit): Callback<ServerStatus> {
+        return object : Callback<ServerStatus> {
+            override fun onResponse(call: Call<ServerStatus>, response: Response<ServerStatus>) {
+                Log.i(DataSynchronizer.TAG, "Status: " + response.body().toString())
+                if (isStatusOk(response)) {
+                    function.invoke()
+                } else {
+                    Snackbar.make(activity!!.findViewById(android.R.id.content),
+                             "ServerStatus not ok",
+                            Snackbar.LENGTH_SHORT)
+                            .show()
+                    Log.e(DataSynchronizer.TAG, "An error occured: " + response.errorBody())
+                }
+                return
+            }
+
+            override fun onFailure(call: Call<ServerStatus>, t: Throwable) {
+                Log.e(DataSynchronizer.TAG, "Failure: " + t.message)
+            }
+        }
+    }
+
+    private fun isStatusOk(response: Response<ServerStatus>): Boolean {
+        return response.isSuccessful && "ok".equals(response.body()?.status)
+    }
+
     companion object {
 
-        private val TAG = "BluetoothSynchronizer"
+        private val TAG = "DataSynchronizer"
 
         // Intent request codes
         private val REQUEST_CONNECT_DEVICE = 1

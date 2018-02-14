@@ -1,16 +1,11 @@
 package com.teeh.klimasensor.weather
 
 import android.content.Context
-import android.util.Log
 
-import com.google.android.gms.tasks.Task
 import com.teeh.klimasensor.common.config.ConfigService
-
-import java.io.IOException
 
 import retrofit2.Call
 import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -45,7 +40,7 @@ class OutsideWeatherService(private val context: Context) {
     }
 
     companion object {
-        private val TAG = "OutsideWeatherService"
+        private val TAG = "SensorDataServiceInterface"
         private val API = "http://api.openweathermap.org/data/2.5/"
     }
 

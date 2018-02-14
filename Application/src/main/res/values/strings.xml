@@ -56,6 +56,10 @@
     <string name="button_add_real_temp">Add real Temperature</string>
     <string name="button_show_graph">Show Graph</string>
 
+    <string name="download_empty">Nothing to download</string>
+    <string name="download_failed">Download failed</string>
+    <string name="download_success">Download succeeded</string>
+
     <string name="clear_data_warning">Do you want to clear the DB?</string>
     <string name="update_data_warning">Do you want to update this Entry?</string>
     <string name="create_data_warning">Do you want to create this Entry?</string>

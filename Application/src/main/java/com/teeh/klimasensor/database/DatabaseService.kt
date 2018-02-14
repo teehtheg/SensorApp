@@ -14,13 +14,16 @@ import java.util.Date
 
 import com.teeh.klimasensor.TsEntry
 import com.teeh.klimasensor.common.activities.BaseActivity
+import com.teeh.klimasensor.common.constants.Constants
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.utils.DateUtils
+import com.teeh.klimasensor.rest.SensorData
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import org.jetbrains.anko.doAsync
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DatabaseService private constructor() {
 
@@ -126,6 +129,38 @@ class DatabaseService private constructor() {
                 val h = java.lang.Double.valueOf(fields[1])
                 val t = java.lang.Double.valueOf(fields[2])
                 val p = java.lang.Double.valueOf(fields[3])
+
+                val content = ContentValues()
+                content.put(KlimasensorEntry.COLUMN_NAME_TIMESTAMP, DateUtils.toLong(d))
+                content.put(KlimasensorEntry.COLUMN_NAME_HUMIDITY, h)
+                content.put(KlimasensorEntry.COLUMN_NAME_TEMPERATURE, t)
+                content.put(KlimasensorEntry.COLUMN_NAME_PRESSURE, p)
+
+                val res = writableDB.insert(
+                        KlimasensorEntry.TABLE_NAME, null,
+                        content
+                )
+
+
+            } catch (e: NumberFormatException) {
+                Log.e(TAG, e.localizedMessage)
+                continue
+            } catch (e: ParseException) {
+                Log.e(TAG, e.localizedMessage)
+                continue
+            }
+
+        }
+    }
+
+    fun addNewSensordataFromRest(list: List<SensorData>) {
+        for (line in list) {
+
+            try {
+                val d = DateUtils.toLocalDate(line.timestamp!!, DateTimeFormatter.RFC_1123_DATE_TIME)
+                val h = line.humidity
+                val t = line.temperature
+                val p = line.pressure
 
                 val content = ContentValues()
                 content.put(KlimasensorEntry.COLUMN_NAME_TIMESTAMP, DateUtils.toLong(d))

@@ -2,13 +2,11 @@ package com.teeh.klimasensor
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.FragmentTransaction
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 
-import com.teeh.klimasensor.bluetooth.BluetoothSynchronizer
 import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.database.DatabaseService
 
@@ -20,10 +18,11 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        DatabaseService.instance.start(this)
 
         if (savedInstanceState == null) {
             val transaction = supportFragmentManager.beginTransaction()
-            val fragment = BluetoothSynchronizer()
+            val fragment = DataSynchronizer()
             transaction.replace(R.id.sample_content_fragment, fragment)
             transaction.commit()
         }
@@ -31,7 +30,6 @@ class MainActivity : BaseActivity() {
 
     public override fun onStart() {
         super.onStart()
-        DatabaseService.instance.start(this)
     }
 
     public override fun onDestroy() {
