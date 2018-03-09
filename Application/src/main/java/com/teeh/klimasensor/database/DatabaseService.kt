@@ -77,6 +77,7 @@ class DatabaseService private constructor() {
     }
 
     fun getSensordata(leaveOut: Long): List<TsEntry> {
+        val timeBegin = System.currentTimeMillis()
         val selection: String? = null
         val selectionArgs: Array<String>? = null
         val sortOrder = KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC"
@@ -92,17 +93,19 @@ class DatabaseService private constructor() {
         val result = getTsDataFromCursor(cursor, leaveOut)
         cursor.close()
 
+        Log.d(TAG, "It took " + ((System.currentTimeMillis() - timeBegin).toDouble() / 1000.0).toString() + "sec to read ${result.size} entries from cursor (left out $leaveOut)")
         return result
     }
 
     fun getSensordataRange(startDate: LocalDateTime, endDate: LocalDateTime, leaveOut: Long): List<TsEntry> {
+        val timeBegin = System.currentTimeMillis()
         val cursor = readableDB.rawQuery("SELECT * FROM " + KlimasensorEntry.TABLE_NAME +
                 " WHERE " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " BETWEEN " + DateUtils.toLong(startDate) + " AND " + DateUtils.toLong(endDate) +
                 " ORDER BY " + KlimasensorEntry.COLUMN_NAME_TIMESTAMP + " ASC", null)
 
         val result = getTsDataFromCursor(cursor, leaveOut)
         cursor.close()
-
+        Log.d(TAG, "It took " + ((System.currentTimeMillis() - timeBegin).toDouble() / 1000.0).toString() + "sec to read ${result.size} entries from cursor (left out $leaveOut)")
         return result
     }
 
@@ -342,11 +345,11 @@ class DatabaseService private constructor() {
 
             count = count + 1
         }
-        Log.d(TAG, "Read ${result.size} entries from cursor (left out $leaveOut)")
         return result
     }
 
     private fun getExtremalEntry(extremum: String, field: String): TsEntry {
+        val timeBegin = System.currentTimeMillis()
         val selection = field + " = (SELECT " + extremum + "(" + field + ") FROM " + KlimasensorEntry.TABLE_NAME + ")"
 
         val cursor = readableDB.query(
@@ -357,8 +360,7 @@ class DatabaseService private constructor() {
 
         val result = getTsDataFromCursor(cursor)
         cursor.close()
-
-        Log.d(TAG, "Fetched: " + result)
+        Log.d(TAG, "It took " + ((System.currentTimeMillis() - timeBegin).toDouble() / 1000.0).toString() + "sec to read ${result.size} entries from cursor")
 
         if (result.size == 1) {
             return result[0]

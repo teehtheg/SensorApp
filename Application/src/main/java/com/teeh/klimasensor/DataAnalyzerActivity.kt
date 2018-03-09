@@ -20,6 +20,7 @@ import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -106,7 +107,7 @@ class DataAnalyzerActivity : BaseActivity() {
         val weatherService = OutsideWeatherService(this)
         weatherService.getWeather(getWeatherCallback())
 
-        async(UI) {
+        launch(UI) {
             sensorTs = TimeseriesService.instance.sensorTs.await()
             initializeKeyfigures()
             temperature_dev.text = nf.format(sensorTs.avgTempDeviation)

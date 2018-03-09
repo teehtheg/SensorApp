@@ -19,10 +19,7 @@ import java.util.Date
 import android.provider.Telephony.Mms.Part.FILENAME
 import com.google.android.gms.tasks.Tasks.await
 import com.teeh.klimasensor.rest.SensorData
-import kotlinx.coroutines.experimental.CommonPool
-
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.*
 
 /**
  * Created by teeh on 30.12.2016.
@@ -53,18 +50,6 @@ class TimeseriesService private constructor() {
             getSensorTs(readFromDB(), true)
         }
 
-    @Deprecated("Use Async functions instead")
-    fun getSensorTs(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
-        val list = readRangeFromDB(startDate, endDate)
-        return getSensorTs(list, false)
-    }
-
-    @Deprecated("Use Async functions instead")
-    fun getSensorTsReduced(startDate: LocalDateTime, endDate: LocalDateTime): SensorTs {
-        val list = readRangeFromDB(startDate, endDate)
-        return getSensorTs(list, true)
-    }
-
     fun getSensorTsAsync(startDate: LocalDateTime, endDate: LocalDateTime): Deferred<SensorTs> {
         return async(CommonPool) {
             getSensorTs(readRangeFromDB(startDate, endDate), false)
@@ -77,8 +62,8 @@ class TimeseriesService private constructor() {
         }
     }
 
-    fun updateSensorTsAsync(update: List<SensorData>): Deferred<Unit> {
-        return async(CommonPool) {
+    fun updateSensorTsAsync(update: List<SensorData>): Job {
+        return launch(CommonPool) {
             DatabaseService.instance.addNewSensordataFromRest(update)
         }
     }

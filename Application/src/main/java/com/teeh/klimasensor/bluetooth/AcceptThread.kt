@@ -24,7 +24,7 @@ class AcceptThread(private val service: BluetoothService) : Thread() {
         // Create a new listening server socket
         try {
             tmp = service.adapter.listenUsingInsecureRfcommWithServiceRecord(BluetoothConstants.NAME_INSECURE,
-                    BluetoothConstants.MY_UUID_INSECURE)
+                    service.uuid)
 
         } catch (e: IOException) {
             Log.e(BluetoothConstants.TAG, "Socket Type: " + mSocketType + "listen() failed", e)

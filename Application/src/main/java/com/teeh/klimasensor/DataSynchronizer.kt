@@ -163,7 +163,7 @@ class DataSynchronizer : Fragment() {
         Log.d(TAG, "setupChat()")
 
         // Initialize the BluetoothService to perform bluetooth connections
-        mChatService = BluetoothService(mHandler)
+        mChatService = BluetoothService(mHandler, context!!)
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = StringBuffer("")
@@ -376,10 +376,12 @@ class DataSynchronizer : Fragment() {
                     if (!checkNotNull(response.body()).isEmpty()) {
                         val update = response.body()!!
                         TimeseriesService.instance.updateSensorTsAsync(update)
-                        Snackbar.make(activity!!.findViewById(android.R.id.content),
-                                update.size.toString() + " records downloaded",
-                                Snackbar.LENGTH_SHORT)
-                                .show()
+                                .invokeOnCompletion {
+                            Snackbar.make(activity!!.findViewById(android.R.id.content),
+                                    update.size.toString() + " records downloaded",
+                                    Snackbar.LENGTH_SHORT)
+                                    .show()
+                        }
                     } else {
                         Snackbar.make(activity!!.findViewById(android.R.id.content),
                                 R.string.download_empty,

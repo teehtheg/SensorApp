@@ -19,6 +19,7 @@ package com.teeh.klimasensor.bluetooth
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -27,6 +28,8 @@ import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_CONNECTING
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_LISTEN
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.STATE_NONE
 import com.teeh.klimasensor.bluetooth.BluetoothConstants.TAG
+import com.teeh.klimasensor.common.config.ConfigService
+import java.util.*
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -34,13 +37,22 @@ import com.teeh.klimasensor.bluetooth.BluetoothConstants.TAG
  * incoming connections, a thread for connecting with a device, and a
  * thread for performing data transmissions when connected.
  */
-class BluetoothService(private val mHandler: Handler) {
+class BluetoothService(private val mHandler: Handler, private val context: Context) {
 
     private var mAdapter = BluetoothAdapter.getDefaultAdapter()
     private var mState = STATE_NONE
     private var mAcceptThread: AcceptThread? = null
     private var mConnectThread: ConnectThread? = null
     private var mConnectedThread: ConnectedThread? = null
+    private var mUuid: UUID? = null
+
+    init {
+        val configService = ConfigService(context)
+        mUuid = UUID.fromString(configService.get("piteeh.bluetooth.uuid"))
+    }
+
+    val uuid: UUID
+        get() = mUuid!!
 
     val adapter: BluetoothAdapter
         get() = mAdapter
