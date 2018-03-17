@@ -13,6 +13,7 @@ import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.database.DatabaseService
 
 import com.teeh.klimasensor.common.exception.BusinessException
+import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.utils.DateUtils
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -39,6 +40,8 @@ class DatabaseActivity : BaseActivity() {
     private var currentIndex: Int? = null
     private lateinit var shownEntry: TsEntry
     private lateinit var seekBarSteps: List<TsEntry>
+
+    private val loadingOverlay: View by bind(R.id.overlay_loading)
 
     private val onSeekBarChangeListener: SeekBar.OnSeekBarChangeListener
         get() = object : SeekBar.OnSeekBarChangeListener {
@@ -75,6 +78,7 @@ class DatabaseActivity : BaseActivity() {
         async(UI) {
             seekBarSteps = DatabaseService.instance.getAllSensordataAsync().await()
             seekBar.max = seekBarSteps.size - 1
+            loadingOverlay.visibility = View.GONE
         }
         currentIndex = 0
 

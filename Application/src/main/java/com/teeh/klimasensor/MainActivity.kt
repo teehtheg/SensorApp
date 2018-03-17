@@ -2,6 +2,7 @@ package com.teeh.klimasensor
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.BottomNavigationView
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -13,17 +14,20 @@ import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_CONNECT_DEVICE
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_SHOW_DBUTIL
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_SHOW_SETTINGS
+import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.database.DatabaseService
 
 
 class MainActivity : BaseActivity() {
 
-    private val frame: FrameLayout? = null
+    private val bottomNavigationView: BottomNavigationView by bind(R.id.bottom_nav)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         DatabaseService.instance.start(this)
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { it -> gotoActivity(it) }
 
         if (savedInstanceState == null) {
             val transaction = supportFragmentManager.beginTransaction()
@@ -45,6 +49,21 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    private fun gotoActivity(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.nav_data -> {
+                startActivity(Intent(this, DatabaseActivity::class.java))
+            }
+            R.id.nav_analyze -> {
+                startActivity(Intent(this, DataAnalyzerActivity::class.java))
+            }
+            R.id.nav_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+            }
+        }
         return true
     }
 
@@ -72,6 +91,12 @@ class MainActivity : BaseActivity() {
 
     protected fun useToolbar(): Boolean {
         return true
+    }
+
+    fun buttonShowSettings(view: View) {
+        val serverIntent = Intent(this, SettingsActivity::class.java)
+        this.overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
+        startActivityForResult(serverIntent, REQUEST_SHOW_SETTINGS)
     }
 
     fun buttonShowAnalyzer(view: View) {

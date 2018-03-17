@@ -19,7 +19,7 @@
         android:allowBackup="true"
         android:icon="@drawable/logo_small"
         android:label="@string/app_name"
-        android:theme="@style/Theme.AppCompat.Light">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name="com.teeh.klimasensor.MainActivity"
