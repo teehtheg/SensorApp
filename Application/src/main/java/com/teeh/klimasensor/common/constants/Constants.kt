@@ -6,6 +6,16 @@ package com.teeh.klimasensor.common.constants
 
 object Constants {
 
-    val STRING_DATE_FORMAT = "yyyy-MM-dd kk:mm:ss"
+    public val STRING_DATE_FORMAT = "yyyy-MM-dd kk:mm:ss"
+
+    // Intent request codes
+    public val REQUEST_CONNECT_DEVICE = 1
+    public val REQUEST_SHOW_GRAPH = 2
+    public val REQUEST_ENABLE_BT = 3
+    public val REQUEST_SHOW_ANALYZER = 4
+    public val REQUEST_SHOW_DBUTIL = 5
+    public val REQUEST_SHOW_SETTINGS = 6
+
+    public val FILENAME = "timeseries.csv"
 
 }

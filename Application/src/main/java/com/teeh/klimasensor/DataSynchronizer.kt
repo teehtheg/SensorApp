@@ -1,43 +1,32 @@
 package com.teeh.klimasensor
 
 import android.app.Activity
-import android.app.ProgressDialog.show
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 
-import com.teeh.klimasensor.DatabaseActivity
-import com.teeh.klimasensor.R
-import com.teeh.klimasensor.R.id.outside_temp
-import com.teeh.klimasensor.SettingsActivity
-import com.teeh.klimasensor.TimeseriesService
 import com.teeh.klimasensor.bluetooth.BluetoothConstants
 import com.teeh.klimasensor.bluetooth.BluetoothService
 import com.teeh.klimasensor.bluetooth.DeviceListActivity
 import com.teeh.klimasensor.bluetooth.MessageHandler
-import com.teeh.klimasensor.common.ts.ValueType
+import com.teeh.klimasensor.common.constants.Constants.REQUEST_CONNECT_DEVICE
+import com.teeh.klimasensor.common.constants.Constants.REQUEST_ENABLE_BT
 import com.teeh.klimasensor.common.utils.DateUtils
-import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.rest.SensorData
 import com.teeh.klimasensor.rest.SensorDataService
 import com.teeh.klimasensor.rest.ServerStatus
-import com.teeh.klimasensor.weather.CurrentWeather
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -58,25 +47,13 @@ class DataSynchronizer : Fragment() {
     /**
      * Member object for the chat services
      */
-    private var mChatService: BluetoothService? = null
+    private var mBluetoothService: BluetoothService? = null
 
     private lateinit var buttonDownload: Button
     private lateinit var buttonUpdate: Button
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
-
-    /**
-     * The action listener for the EditText widget, to listen for the return key
-     */
-    private val mWriteListener = TextView.OnEditorActionListener { view, actionId, event ->
-        // If the action is a key-up event on the return key, send the message
-        if (actionId == EditorInfo.IME_NULL && event.action == KeyEvent.ACTION_UP) {
-            val message = view.text.toString()
-            sendMessage(message)
-        }
-        true
-    }
 
     /**
      * The Handler that gets information back from the BluetoothService
@@ -108,14 +85,14 @@ class DataSynchronizer : Fragment() {
     override fun onStart() {
         super.onStart()
         // If BT is not on, request that it be enabled.
-        // setupChat() will then be called during onActivityResult
+        // setupBluetooth() will then be called during onActivityResult
         if (!mBluetoothAdapter!!.isEnabled) {
             val enableIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT)
         }
 
         if (mBluetoothAdapter!!.isEnabled) {
-            setupChat()
+            setupBluetooth()
         }
 
         registerButtonListeners()
@@ -126,7 +103,7 @@ class DataSynchronizer : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mChatService!!.stop()
+        mBluetoothService!!.stop()
     }
 
     override fun onResume() {
@@ -135,11 +112,11 @@ class DataSynchronizer : Fragment() {
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
-        if (mChatService != null) {
+        if (mBluetoothService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
-            if (mChatService!!.state == BluetoothConstants.STATE_NONE) {
+            if (mBluetoothService!!.state == BluetoothConstants.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService!!.start()
+                mBluetoothService!!.start()
             }
         }
     }
@@ -159,11 +136,10 @@ class DataSynchronizer : Fragment() {
     /**
      * Set up the UI and background operations for chat.
      */
-    private fun setupChat() {
-        Log.d(TAG, "setupChat()")
+    private fun setupBluetooth() {
 
         // Initialize the BluetoothService to perform bluetooth connections
-        mChatService = BluetoothService(mHandler, context!!)
+        mBluetoothService = BluetoothService(mHandler, context!!)
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = StringBuffer("")
@@ -190,7 +166,7 @@ class DataSynchronizer : Fragment() {
      */
     private fun downloadData() {
         // Check that we're actually connected before trying anything
-        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mBluetoothService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -202,7 +178,7 @@ class DataSynchronizer : Fragment() {
             return
         }
 
-        mChatService!!.write("getData".toByteArray())
+        mBluetoothService!!.write("getData".toByteArray())
     }
 
     /**
@@ -210,7 +186,7 @@ class DataSynchronizer : Fragment() {
      */
     private fun updateData() {
         // Check that we're actually connected before trying anything
-        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mBluetoothService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -223,7 +199,7 @@ class DataSynchronizer : Fragment() {
         }
         val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
         val msg = "getDataUpdate;" + latestTs
-        mChatService!!.write(msg.toByteArray())
+        mBluetoothService!!.write(msg.toByteArray())
     }
 
     /**
@@ -233,7 +209,7 @@ class DataSynchronizer : Fragment() {
      */
     private fun sendMessage(message: String) {
         // Check that we're actually connected before trying anything
-        if (mChatService!!.state != BluetoothConstants.STATE_CONNECTED) {
+        if (mBluetoothService!!.state != BluetoothConstants.STATE_CONNECTED) {
             Snackbar.make(activity!!.findViewById(android.R.id.content),
                     R.string.not_connected,
                     Snackbar.LENGTH_SHORT)
@@ -246,7 +222,7 @@ class DataSynchronizer : Fragment() {
         if (message.length > 0) {
             // Get the message bytes and tell the BluetoothService to write
             val send = message.toByteArray()
-            mChatService!!.write(send)
+            mBluetoothService!!.write(send)
 
             // Reset out string buffer to zero and clear the edit text field
             mOutStringBuffer.setLength(0)
@@ -304,7 +280,7 @@ class DataSynchronizer : Fragment() {
                 // When the request to enable Bluetooth returns
                 if (resultCode == Activity.RESULT_OK) {
                     // Bluetooth is now enabled, so set up a chat session
-                    setupChat()
+                    setupBluetooth()
                 } else {
                     // User did not enable Bluetooth or an error occurred
                     Log.d(TAG, "BT not enabled")
@@ -332,21 +308,11 @@ class DataSynchronizer : Fragment() {
         // Get the BluetoothDevice object
         val device = mBluetoothAdapter!!.getRemoteDevice(address)
         // Attempt to connect to the device
-        mChatService!!.connect(device)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater!!.inflate(R.menu.main_menu, menu)
+        mBluetoothService!!.connect(device)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            R.id.connect_scan -> {
-                // Launch the DeviceListActivity to see devices and do scan
-                val serverIntent = Intent(activity, DeviceListActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE)
-                return true
-            }
             R.id.download_data -> {
                 downloadData()
                 return true
@@ -355,18 +321,8 @@ class DataSynchronizer : Fragment() {
                 updateData()
                 return true
             }
-            R.id.db_util -> {
-                val serverIntent = Intent(activity, DatabaseActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_SHOW_DBUTIL)
-                return true
-            }
-            R.id.settings -> {
-                val serverIntent = Intent(activity, SettingsActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_SHOW_SETTINGS)
-                return true
-            }
         }
-        return false
+        return super.onOptionsItemSelected(item)
     }
 
     fun getSensorDataCallback(): Callback<List<SensorData>> {
@@ -430,15 +386,6 @@ class DataSynchronizer : Fragment() {
 
         private val TAG = "DataSynchronizer"
 
-        // Intent request codes
-        private val REQUEST_CONNECT_DEVICE = 1
-        private val REQUEST_SHOW_GRAPH = 2
-        private val REQUEST_ENABLE_BT = 3
-        private val REQUEST_SHOW_ANALYZER = 4
-        private val REQUEST_SHOW_DBUTIL = 5
-        private val REQUEST_SHOW_SETTINGS = 6
-
-        private val FILENAME = "timeseries.csv"
     }
 
 }
