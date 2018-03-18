@@ -5,341 +5,350 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="">
+        android:fillViewport="true" >
 
-        <LinearLayout
+    <!--android:isScrollContainer="false" >-->
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Number of entries"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:id="@+id/db_num_entries"
-                        android:text="value"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Oldest entry"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:id="@+id/db_oldest_entry"
-                        android:text="value"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Latest entry"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:id="@+id/db_latest_entry"
-                        android:text="value"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:id="@+id/tsentry_timestamp_long"
-                        android:gravity="end"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25" />
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="0dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Timestamp"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/tsentry_timestamp"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:inputType="datetime"/>
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Pressure"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/tsentry_pressure"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:inputType="numberDecimal"/>
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Temperature"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/tsentry_temp"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:inputType="numberDecimal"/>
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Real Temperature"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold" />
-
-                    <EditText
-                        android:id="@+id/tsentry_real_temp"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:inputType="numberDecimal"/>
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-
-                <TableRow android:layout_marginTop="5dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-
-                    <TextView
-                        android:layout_column="1"
-                        android:text="Humidity"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:textStyle="bold"
-                        android:padding="3dip" />
-
-                    <EditText
-                        android:id="@+id/tsentry_humidity"
-                        android:gravity="right"
-                        android:layout_width="0dp"
-                        android:layout_weight=".25"
-                        android:inputType="numberDecimal"/>
-
-                    <TextView
-                        android:text=""
-                        android:padding="3dip" />
-                </TableRow>
-            </TableLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="bottom" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:gravity="center"
-                    android:id="@+id/seek_bar_text"/>
+                    android:layout_height="wrap_content" >
 
-                <SeekBar
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Number of entries"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:id="@+id/db_num_entries"
+                            android:text="value"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Oldest entry"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:id="@+id/db_oldest_entry"
+                            android:text="value"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:id="@+id/seek_bar"/>
+                    android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
 
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Latest entry"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:id="@+id/db_latest_entry"
+                            android:text="value"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="15dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:id="@+id/tsentry_timestamp_long"
+                            android:gravity="end"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25" />
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="0dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Timestamp"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/tsentry_timestamp"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:inputType="datetime"/>
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Pressure"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/tsentry_pressure"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:inputType="numberDecimal"/>
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Temperature"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/tsentry_temp"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:inputType="numberDecimal"/>
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Real Temperature"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/tsentry_real_temp"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:inputType="numberDecimal"/>
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="5dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+
+                        <TextView
+                            android:layout_column="1"
+                            android:text="Humidity"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:textStyle="bold"
+                            android:padding="3dip" />
+
+                        <EditText
+                            android:id="@+id/tsentry_humidity"
+                            android:gravity="right"
+                            android:layout_width="0dp"
+                            android:layout_weight=".25"
+                            android:inputType="numberDecimal"/>
+
+                        <TextView
+                            android:text=""
+                            android:padding="3dip" />
+                    </TableRow>
+                </TableLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="bottom" >
 
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Previous"
-                    android:onClick="loadPrev"
-                    android:id="@+id/button" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="loadNext"
-                    android:text="Next" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Update"
-                    android:onClick="updateSensordata" />
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Create"
-                    android:onClick="createSensordata" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Delete entry"
-                    android:onClick="deleteSensordata" />
-
-                <Button
-                    android:id="@+id/button_clear_data"
-                    android:text="@string/button_clear_data"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:onClick="clearSensordata" />
+                    android:orientation="vertical">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:gravity="center"
+                        android:id="@+id/seek_bar_text"/>
+
+                    <SeekBar
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="10dp"
+                        android:id="@+id/seek_bar"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Previous"
+                        android:onClick="loadPrev"
+                        android:id="@+id/button" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:onClick="loadNext"
+                        android:text="Next" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Update"
+                        android:onClick="updateSensordata" />
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Create"
+                        android:onClick="createSensordata" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete entry"
+                        android:onClick="deleteSensordata" />
+
+                    <Button
+                        android:id="@+id/button_clear_data"
+                        android:text="@string/button_clear_data"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:onClick="clearSensordata" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 
     <include layout="@layout/overlay_loading"/>
 

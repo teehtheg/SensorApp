@@ -3,6 +3,7 @@ package com.teeh.klimasensor
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
+import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -29,12 +30,7 @@ class MainActivity : BaseActivity() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener { it -> gotoActivity(it) }
 
-        if (savedInstanceState == null) {
-            val transaction = supportFragmentManager.beginTransaction()
-            val fragment = DataSynchronizer()
-            transaction.replace(R.id.sample_content_fragment, fragment)
-            transaction.commit()
-        }
+        replaceContentFragment(DataSynchronizer())
     }
 
     public override fun onStart() {
@@ -55,13 +51,19 @@ class MainActivity : BaseActivity() {
     private fun gotoActivity(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_data -> {
-                startActivity(Intent(this, DatabaseActivity::class.java))
+                replaceContentFragment(DataSynchronizer())
+            }
+            R.id.nav_storage -> {
+                replaceContentFragment(DatabaseFragment())
             }
             R.id.nav_analyze -> {
-                startActivity(Intent(this, DataAnalyzerActivity::class.java))
+                replaceContentFragment(DataAnalyzerFragment())
             }
             R.id.nav_settings -> {
-                startActivity(Intent(this, SettingsActivity::class.java))
+                replaceContentFragment(SettingsFragment())
+            }
+            R.id.nav_visualize -> {
+                replaceContentFragment(DataVisualizerEditorFragment())
             }
         }
         return true
@@ -80,23 +82,18 @@ class MainActivity : BaseActivity() {
                 startActivityForResult(serverIntent, REQUEST_SHOW_DBUTIL)
                 return true
             }
-            R.id.settings -> {
-                val serverIntent = Intent(this, SettingsActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_SHOW_SETTINGS)
-                return true
-            }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    protected fun useToolbar(): Boolean {
-        return true
+    private fun replaceContentFragment(fragment: Fragment) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.sample_content_fragment, fragment)
+        transaction.commit()
     }
 
-    fun buttonShowSettings(view: View) {
-        val serverIntent = Intent(this, SettingsActivity::class.java)
-        this.overridePendingTransition(R.anim.anim_slide_in_right, R.anim.anim_slide_out_left)
-        startActivityForResult(serverIntent, REQUEST_SHOW_SETTINGS)
+    protected fun useToolbar(): Boolean {
+        return true
     }
 
     fun buttonShowAnalyzer(view: View) {

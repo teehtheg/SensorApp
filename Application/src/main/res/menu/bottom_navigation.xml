@@ -2,11 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nav_data"
         android:title="Data"
+        android:checked="true"
         android:icon="@drawable/ic_swap_vert_black_24dp" />
+    <item android:id="@+id/nav_storage"
+        android:title="Storage"
+        android:icon="@drawable/ic_storage_black_24dp" />
     <item android:id="@+id/nav_analyze"
         android:title="Analyze"
         android:icon="@drawable/ic_search_black_24dp" />
+    <item android:id="@+id/nav_visualize"
+        android:title="Visualize"
+        android:icon="@drawable/ic_timeline_black_24dp" />
     <item android:id="@+id/nav_settings"
         android:title="Settings"
         android:icon="@drawable/ic_settings_black_24dp" />
+
 </menu>

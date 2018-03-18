@@ -7,53 +7,67 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/id_appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:gravity="bottom" >
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/id_toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/id_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
-        <FrameLayout
-            android:id="@+id/sample_content_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+        </android.support.design.widget.CollapsingToolbarLayout>
 
-        <Button
-            android:id="@+id/button_show_visualizer"
-            android:text="@string/button_show_visualizer"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:onClick="buttonShowVisualizer"/>
+        <!--<android.support.v7.widget.Toolbar-->
+            <!--android:id="@+id/id_toolbar"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
 
-        <Button
-            android:id="@+id/button_show_analyzer"
-            android:text="@string/button_show_analyzer"
-            android:textSize="18dp"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:onClick="buttonShowAnalyzer"/>
-1
-        <android.support.design.widget.BottomNavigationView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/bottom_nav"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_gravity="start"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@drawable/bottom_nav_selector"
-            app:itemTextColor="@drawable/bottom_nav_selector"
-            app:menu="@menu/bottom_navigation" />
+        <!--<android.support.design.widget.TabLayout-->
+            <!--android:id="@+id/id_tabs"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content" />-->
+
+        <!--<Button-->
+            <!--android:id="@+id/button_show_visualizer"-->
+            <!--android:text="@string/button_show_visualizer"-->
+            <!--android:textSize="18dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:onClick="buttonShowVisualizer"/>-->
+
+        <!--<Button-->
+            <!--android:id="@+id/button_show_analyzer"-->
+            <!--android:text="@string/button_show_analyzer"-->
+            <!--android:textSize="18dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="80dp"-->
+            <!--android:onClick="buttonShowAnalyzer"/>-->
 
     </android.support.design.widget.AppBarLayout>
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/sample_content_fragment"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent" />-->
+    <LinearLayout
+        android:id="@+id/sample_content_fragment"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="56dp">
+
+    </LinearLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/bottom_nav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/bottom_nav_selector"
+        app:itemTextColor="@drawable/bottom_nav_selector"
+        app:menu="@menu/bottom_navigation" />
 
 </android.support.design.widget.CoordinatorLayout>

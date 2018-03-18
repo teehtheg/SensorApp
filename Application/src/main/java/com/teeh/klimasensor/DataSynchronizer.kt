@@ -8,8 +8,6 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -72,7 +70,7 @@ class DataSynchronizer : Fragment() {
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             val activity = activity
-            Snackbar.make(getActivity()!!.findViewById(android.R.id.content),
+            Snackbar.make(activity!!.findViewById(android.R.id.content),
                     "Bluetooth is not available",
                     Snackbar.LENGTH_SHORT)
                     .show()
@@ -122,7 +120,7 @@ class DataSynchronizer : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.bluetooth_synchronizer, container, false)
+        return inflater.inflate(R.layout.fragment_data_synchronizer, container, false)
     }
 
     private fun registerButtonListeners() {

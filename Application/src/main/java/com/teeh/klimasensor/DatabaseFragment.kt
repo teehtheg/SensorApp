@@ -3,22 +3,24 @@ package com.teeh.klimasensor
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.SeekBar
 import android.widget.TextView
-
 import com.teeh.klimasensor.common.activities.BaseActivity
-import com.teeh.klimasensor.database.DatabaseService
-
 import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.utils.DateUtils
+import com.teeh.klimasensor.database.DatabaseService
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
-class DatabaseActivity : BaseActivity() {
+class DatabaseFragment : Fragment() {
 
     private val tsEntryTimestampLong: TextView by bind(R.id.tsentry_timestamp_long)
     private val tsEntryTimestamp: EditText by bind(R.id.tsentry_timestamp)
@@ -64,10 +66,8 @@ class DatabaseActivity : BaseActivity() {
             }
         }
 
-
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_db_util)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_db_util, container, false)
     }
 
     public override fun onStart() {
@@ -102,17 +102,17 @@ class DatabaseActivity : BaseActivity() {
 
     fun showTimePickerDialog(v: View) {
         val newFragment = TimePickerFragment()
-        newFragment.show(fragmentManager, "timePicker")
+        newFragment.show(activity!!.fragmentManager, "timePicker")
     }
 
     fun showDatePickerDialog(v: View) {
         val newFragment = DatePickerFragment()
-        newFragment.show(fragmentManager, "datePicker")
+        newFragment.show(activity!!.fragmentManager, "datePicker")
     }
 
 
     fun clearSensordata(view: View) {
-        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.clear_data_warning, Snackbar.LENGTH_SHORT)
+        val mySnackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.clear_data_warning, Snackbar.LENGTH_SHORT)
 
         mySnackbar.setAction("YES", clearDataListener)
                 .setActionTextColor(Color.GREEN)
@@ -120,7 +120,7 @@ class DatabaseActivity : BaseActivity() {
     }
 
     fun updateSensordata(v: View) {
-        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_warning, Snackbar.LENGTH_LONG)
+        val mySnackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.update_data_warning, Snackbar.LENGTH_LONG)
 
         mySnackbar.setAction("YES", updateDataListener)
                 .setActionTextColor(Color.GREEN)
@@ -128,7 +128,7 @@ class DatabaseActivity : BaseActivity() {
     }
 
     fun createSensordata(v: View) {
-        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_warning, Snackbar.LENGTH_LONG)
+        val mySnackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.create_data_warning, Snackbar.LENGTH_LONG)
 
         mySnackbar.setAction("YES", createDataListener)
                 .setActionTextColor(Color.GREEN)
@@ -136,7 +136,7 @@ class DatabaseActivity : BaseActivity() {
     }
 
     fun deleteSensordata(v: View) {
-        val mySnackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_warning, Snackbar.LENGTH_LONG)
+        val mySnackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.delete_data_warning, Snackbar.LENGTH_LONG)
 
         mySnackbar.setAction("YES", deleteDataListener)
                 .setActionTextColor(Color.GREEN)
@@ -147,9 +147,9 @@ class DatabaseActivity : BaseActivity() {
         val res = DatabaseService.instance.clearSensorData()
         val snackbar: Snackbar
         if (res != 0L) {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), getString(R.string.clear_data_success, res), Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), getString(R.string.clear_data_success, res), Snackbar.LENGTH_SHORT)
         } else {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.clear_data_failure, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.clear_data_failure, Snackbar.LENGTH_SHORT)
         }
         snackbar.show()
 
@@ -160,9 +160,9 @@ class DatabaseActivity : BaseActivity() {
         val res = DatabaseService.instance.updateEntry(entry)
         val snackbar: Snackbar
         if (res) {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_success, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.update_data_success, Snackbar.LENGTH_SHORT)
         } else {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.update_data_failure, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.update_data_failure, Snackbar.LENGTH_SHORT)
         }
         snackbar.show()
     }
@@ -172,9 +172,9 @@ class DatabaseActivity : BaseActivity() {
         val res = DatabaseService.instance.createEntry(entry)
         val snackbar: Snackbar
         if (res) {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_success, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.create_data_success, Snackbar.LENGTH_SHORT)
         } else {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.create_data_failure, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.create_data_failure, Snackbar.LENGTH_SHORT)
         }
         snackbar.show()
     }
@@ -184,9 +184,9 @@ class DatabaseActivity : BaseActivity() {
         val res = DatabaseService.instance.deleteEntry(entry)
         val snackbar: Snackbar
         if (res) {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_success, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.delete_data_success, Snackbar.LENGTH_SHORT)
         } else {
-            snackbar = Snackbar.make(findViewById(android.R.id.content), R.string.delete_data_failure, Snackbar.LENGTH_SHORT)
+            snackbar = Snackbar.make(activity!!.findViewById(android.R.id.content), R.string.delete_data_failure, Snackbar.LENGTH_SHORT)
         }
         snackbar.show()
     }
