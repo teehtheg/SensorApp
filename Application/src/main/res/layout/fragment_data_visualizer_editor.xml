@@ -51,7 +51,11 @@
             android:id="@+id/rangeSeekbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            app:left_thumb_color="@color/colorPrimaryDark"
+            app:bar_color="@color/colorPrimaryDark"
+            app:bar_highlight_color="@color/colorPrimary"
+            app:right_thumb_color="@color/colorPrimaryDark" />
 
         <TableLayout
             android:layout_width="match_parent"

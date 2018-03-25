@@ -37,36 +37,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:theme="@android:style/Theme.Holo.Dialog"/>
-
-        <activity
-            android:name="com.teeh.klimasensor.DataVisualizerActivity"
-            android:screenOrientation="landscape"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/data_visualizer" />
-
-       <activity
-           android:name="com.teeh.klimasensor.DataVisualizerEditorActivity"
-           android:screenOrientation="portrait"
-           android:configChanges="orientation|keyboardHidden"
-           android:label="@string/data_visualizer" />
-
-        <activity
-            android:name="com.teeh.klimasensor.DataAnalyzerActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/data_analyzer" />
-
-       <activity
-           android:name="com.teeh.klimasensor.SettingsActivity"
-           android:screenOrientation="portrait"
-           android:configChanges="orientation|keyboardHidden"
-           android:label="@string/settings" />
-
-        <activity
-            android:name="com.teeh.klimasensor.DatabaseActivity"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden"
-            android:label="@string/db_util" />
+        
    </application>
 
 </manifest>

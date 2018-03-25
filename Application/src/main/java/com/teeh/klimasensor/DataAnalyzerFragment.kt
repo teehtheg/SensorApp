@@ -10,7 +10,6 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.ValueType
@@ -23,7 +22,6 @@ import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,11 +56,13 @@ class DataAnalyzerFragment : Fragment() {
 
     private val realTempInput: EditText by bind(R.id.input_real_temp)
 
+    private val loadingOverlay: View by bind(R.id.overlay_loading)
+
     private val tsTypes: List<ValueType> = listOf(ValueType.HUMIDITY, ValueType.TEMPERATURE, ValueType.PRESSURE)
     private val typeDisplayMapping = HashMap<ValueType, List<TextView>>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_data_analyzer, container, false)
+        return inflater.inflate(R.layout.fragment_data_analyzer, container, false)
     }
 
     public override fun onStart() {
@@ -91,6 +91,7 @@ class DataAnalyzerFragment : Fragment() {
             sensorTs = TimeseriesService.instance.sensorTs.await()
             initializeKeyfigures()
             temperature_dev.text = nf.format(sensorTs.avgTempDeviation)
+            loadingOverlay.visibility = View.GONE
         }
     }
 

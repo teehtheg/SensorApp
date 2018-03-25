@@ -3,6 +3,7 @@ package com.teeh.klimasensor
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -22,6 +23,7 @@ import com.teeh.klimasensor.bluetooth.MessageHandler
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_CONNECT_DEVICE
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_ENABLE_BT
 import com.teeh.klimasensor.common.utils.DateUtils
+import com.teeh.klimasensor.databinding.FragmentDataSynchronizerBinding
 import com.teeh.klimasensor.rest.SensorData
 import com.teeh.klimasensor.rest.SensorDataService
 import com.teeh.klimasensor.rest.ServerStatus
@@ -29,7 +31,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class DataSynchronizer : Fragment() {
+class DataSynchronizerFragment : Fragment() {
 
     /**
      * String buffer for outgoing messages
@@ -120,7 +122,9 @@ class DataSynchronizer : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_data_synchronizer, container, false)
+        val binding: FragmentDataSynchronizerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_synchronizer, container, false)
+        binding.fragment = this
+        return binding.root
     }
 
     private fun registerButtonListeners() {
@@ -141,6 +145,15 @@ class DataSynchronizer : Fragment() {
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = StringBuffer("")
+    }
+
+    /**
+     * Method called by button on the fragment
+     * @param view
+     */
+    fun buttonConnect(view: View) {
+        val serverIntent = Intent(activity!!, DeviceListActivity::class.java)
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE)
     }
 
     /**
@@ -309,20 +322,6 @@ class DataSynchronizer : Fragment() {
         mBluetoothService!!.connect(device)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.download_data -> {
-                downloadData()
-                return true
-            }
-            R.id.update_data -> {
-                updateData()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     fun getSensorDataCallback(): Callback<List<SensorData>> {
         return object : Callback<List<SensorData>> {
             override fun onResponse(call: Call<List<SensorData>>, response: Response<List<SensorData>>) {
@@ -343,13 +342,13 @@ class DataSynchronizer : Fragment() {
                                 .show()
                     }
                 } else {
-                    Log.e(DataSynchronizer.TAG, "An error occured: " + response.errorBody())
+                    Log.e(DataSynchronizerFragment.TAG, "An error occured: " + response.errorBody())
                 }
                 return
             }
 
             override fun onFailure(call: Call<List<SensorData>>, t: Throwable) {
-                Log.e(DataSynchronizer.TAG, "Failure: " + t.message)
+                Log.e(DataSynchronizerFragment.TAG, "Failure: " + t.message)
             }
         }
     }
@@ -357,7 +356,7 @@ class DataSynchronizer : Fragment() {
     fun getStatusCallback(function: () -> Unit): Callback<ServerStatus> {
         return object : Callback<ServerStatus> {
             override fun onResponse(call: Call<ServerStatus>, response: Response<ServerStatus>) {
-                Log.i(DataSynchronizer.TAG, "Status: " + response.body().toString())
+                Log.i(DataSynchronizerFragment.TAG, "Status: " + response.body().toString())
                 if (isStatusOk(response)) {
                     function.invoke()
                 } else {
@@ -365,13 +364,13 @@ class DataSynchronizer : Fragment() {
                              "ServerStatus not ok",
                             Snackbar.LENGTH_SHORT)
                             .show()
-                    Log.e(DataSynchronizer.TAG, "An error occured: " + response.errorBody())
+                    Log.e(DataSynchronizerFragment.TAG, "An error occured: " + response.errorBody())
                 }
                 return
             }
 
             override fun onFailure(call: Call<ServerStatus>, t: Throwable) {
-                Log.e(DataSynchronizer.TAG, "Failure: " + t.message)
+                Log.e(DataSynchronizerFragment.TAG, "Failure: " + t.message)
             }
         }
     }
@@ -382,7 +381,7 @@ class DataSynchronizer : Fragment() {
 
     companion object {
 
-        private val TAG = "DataSynchronizer"
+        private val TAG = "DataSynchronizerFragment"
 
     }
 

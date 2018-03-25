@@ -10,13 +10,6 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true">
 
-        <android.support.design.widget.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-
-        </android.support.design.widget.CollapsingToolbarLayout>
-
         <!--<android.support.v7.widget.Toolbar-->
             <!--android:id="@+id/id_toolbar"-->
             <!--android:layout_width="match_parent"-->
@@ -50,7 +43,7 @@
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
     <LinearLayout
-        android:id="@+id/sample_content_fragment"
+        android:id="@+id/fragment_container"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

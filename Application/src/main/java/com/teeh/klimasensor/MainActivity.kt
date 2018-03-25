@@ -1,20 +1,14 @@
 package com.teeh.klimasensor
 
-import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
-import com.teeh.klimasensor.bluetooth.DeviceListActivity
-
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.teeh.klimasensor.common.activities.BaseActivity
-import com.teeh.klimasensor.common.constants.Constants.REQUEST_CONNECT_DEVICE
-import com.teeh.klimasensor.common.constants.Constants.REQUEST_SHOW_DBUTIL
-import com.teeh.klimasensor.common.constants.Constants.REQUEST_SHOW_SETTINGS
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.database.DatabaseService
 
@@ -22,6 +16,7 @@ import com.teeh.klimasensor.database.DatabaseService
 class MainActivity : BaseActivity() {
 
     private val bottomNavigationView: BottomNavigationView by bind(R.id.bottom_nav)
+    private val fragmentContainer: LinearLayout by bind(R.id.fragment_container)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +25,10 @@ class MainActivity : BaseActivity() {
 
         bottomNavigationView.setOnNavigationItemSelectedListener { it -> gotoActivity(it) }
 
-        replaceContentFragment(DataSynchronizer())
+        //val layoutParams = bottomNavigationView.getLayoutParams() as CoordinatorLayout.LayoutParams
+        //layoutParams.behavior = BottomNavigationViewBehavior()
+
+        replaceContentFragment(DataSynchronizerFragment())
     }
 
     public override fun onStart() {
@@ -42,16 +40,24 @@ class MainActivity : BaseActivity() {
         super.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.main_menu, menu)
-        return true
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        // Depending on the orientation of the screen, hide or show bottom navigation bar.
+        // The bottom margin of the linear layout has to be adjusted, because otherwise the navigation bar would overlap with it.
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            bottomNavigationView.visibility = View.GONE
+            setBottomMargin(0)
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            bottomNavigationView.visibility = View.VISIBLE
+            setBottomMargin(56)
+        }
     }
 
     private fun gotoActivity(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_data -> {
-                replaceContentFragment(DataSynchronizer())
+                replaceContentFragment(DataSynchronizerFragment())
             }
             R.id.nav_storage -> {
                 replaceContentFragment(DatabaseFragment())
@@ -69,48 +75,20 @@ class MainActivity : BaseActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when (item!!.itemId) {
-            R.id.connect_scan -> {
-                // Launch the DeviceListActivity to see devices and do scan
-                val serverIntent = Intent(this, DeviceListActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE)
-                return true
-            }
-            R.id.db_util -> {
-                val serverIntent = Intent(this, DatabaseActivity::class.java)
-                startActivityForResult(serverIntent, REQUEST_SHOW_DBUTIL)
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun replaceContentFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.sample_content_fragment, fragment)
+        transaction.replace(R.id.fragment_container, fragment)
         transaction.commit()
     }
 
-    protected fun useToolbar(): Boolean {
-        return true
-    }
-
-    fun buttonShowAnalyzer(view: View) {
-        val serverIntent = Intent(this, DataAnalyzerActivity::class.java)
-        startActivityForResult(serverIntent, REQUEST_SHOW_ANALYZER)
-    }
-
-    fun buttonShowVisualizer(view: View) {
-        val serverIntent = Intent(this, DataVisualizerEditorActivity::class.java)
-        startActivityForResult(serverIntent, REQUEST_SHOW_VISUALIZER)
+    private fun setBottomMargin(dp: Int) {
+        var p = fragmentContainer.layoutParams as ViewGroup.MarginLayoutParams
+        val d = this.getResources().getDisplayMetrics().density
+        p.bottomMargin = (dp * d).toInt() // margin in pixels
+        fragmentContainer.layoutParams = p
     }
 
     companion object {
-
-        val REQUEST_SHOW_ANALYZER = 1
-        val REQUEST_SHOW_VISUALIZER = 1
-
         val TAG = "MainActivity"
     }
 }

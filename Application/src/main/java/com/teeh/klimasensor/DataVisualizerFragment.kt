@@ -1,31 +1,26 @@
 package com.teeh.klimasensor
 
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 
 import com.jjoe64.graphview.series.BarGraphSeries
 import com.jjoe64.graphview.series.BaseSeries
 import com.jjoe64.graphview.series.PointsGraphSeries
-import com.teeh.klimasensor.common.activities.BaseActivity
 import com.teeh.klimasensor.common.formatter.CustomDateAsXAxisFormatter
 import com.jjoe64.graphview.GraphView
 import com.jjoe64.graphview.series.DataPoint
 import com.jjoe64.graphview.series.LineGraphSeries
-import com.teeh.klimasensor.R.id.graph
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.mappers.SimpleTsMapper
 import com.teeh.klimasensor.common.ts.SensorTs
 import com.teeh.klimasensor.common.ts.SimpleTs
 import com.teeh.klimasensor.common.ts.ValueType
-import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.common.utils.TsUtil
 
 import com.teeh.klimasensor.common.utils.CurveFittingUtil
@@ -71,7 +66,7 @@ class DataVisualizerFragment : Fragment() {
     //    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_data_visualizer, container, false)
+        return inflater.inflate(R.layout.fragment_data_visualizer, container, false)
     }
 
     public override fun onStart() {

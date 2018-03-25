@@ -4,11 +4,11 @@ package com.teeh.klimasensor.bluetooth
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
-import com.teeh.klimasensor.DataSynchronizer
+import com.teeh.klimasensor.DataSynchronizerFragment
 import com.teeh.klimasensor.R
 import com.teeh.klimasensor.database.DatabaseService
 
-class MessageHandler(private val synchronizer: DataSynchronizer) : Handler() {
+class MessageHandler(private val synchronizer: DataSynchronizerFragment) : Handler() {
 
     private var mConnectedDeviceName: String? = null
 

@@ -50,6 +50,7 @@
     <!-- Buttons -->
     <string name="button_update">Update Sensordata</string>
     <string name="button_download">Download complete Sensordata</string>
+    <string name="button_connect_bluetooth">Connect Bluetooth</string>
     <string name="button_show_visualizer">Show Data Visualizer</string>
     <string name="button_show_analyzer">Show Data Analyzer</string>
     <string name="button_clear_data">Delete complete Sensordata</string>

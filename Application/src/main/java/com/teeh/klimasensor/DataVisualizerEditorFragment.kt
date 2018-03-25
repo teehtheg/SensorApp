@@ -2,7 +2,6 @@ package com.teeh.klimasensor
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.renderscript.ScriptGroup
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +14,7 @@ import android.widget.TextView
 import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener
 import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar
 import com.crystal.crystalrangeseekbar.widgets.CrystalSeekbar
+import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.database.DatabaseService
 import com.teeh.klimasensor.databinding.FragmentDataVisualizerEditorBinding
@@ -25,7 +25,8 @@ import com.teeh.klimasensor.databinding.FragmentDataVisualizerEditorBinding
 
 class DataVisualizerEditorFragment : Fragment() {
 
-    private lateinit var rangeSeekbar: CrystalRangeSeekbar
+    private val rangeSeekbar: CrystalRangeSeekbar by bind(R.id.rangeSeekbar)
+
     private lateinit var tsTypeSpinner: Spinner
 
     private var minDate: Long? = null
@@ -67,7 +68,6 @@ class DataVisualizerEditorFragment : Fragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        //val view = inflater.inflate(R.layout.activity_data_visualizer_editor, container, false)
         val binding: FragmentDataVisualizerEditorBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_visualizer_editor, container, false)
         binding.editor = this
         return binding.root
@@ -83,7 +83,6 @@ class DataVisualizerEditorFragment : Fragment() {
         val maxDateAdjusted = maxDate!! - minDate!!
 
         // setup range seekbar
-        rangeSeekbar = activity!!.findViewById<View>(R.id.rangeSeekbar) as CrystalRangeSeekbar
         rangeSeekbar.setOnRangeSeekbarChangeListener(onRangeSeekbarChangeListener)
         rangeSeekbar.setMinValue(minDateAdjusted.toFloat())
                 .setMaxValue(maxDateAdjusted.toFloat())
@@ -132,7 +131,7 @@ class DataVisualizerEditorFragment : Fragment() {
         fragment.startDate = DateUtils.toLocalDate(startDate!!)
         fragment.endDate = DateUtils.toLocalDate(endDate!!)
         fragment.dataType = tsType
-        transaction.replace(R.id.sample_content_fragment, fragment)
+        transaction.replace(R.id.fragment_container, fragment)
         transaction.commit()
     }
 

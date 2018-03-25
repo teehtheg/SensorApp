@@ -14,39 +14,59 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="top"
-    android:orientation="vertical" >
 
-    <ProgressBar
-        android:id="@+id/progress_download"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="fragment" type="com.teeh.klimasensor.DataSynchronizerFragment"/>
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        style="?android:attr/progressBarStyleHorizontal" />
+        android:layout_height="match_parent"
+        android:gravity="top"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/progress_download_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"/>
+        <ProgressBar
+            android:id="@+id/progress_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            style="?android:attr/progressBarStyleHorizontal" />
 
-    <Button
-        android:id="@+id/button_download"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:textSize="18dp"
-        android:onClick="buttonDownload"
-        android:text="@string/button_download" />
+        <TextView
+            android:id="@+id/progress_download_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"/>
 
-    <Button
-        android:id="@+id/button_update"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:textSize="18dp"
-        android:onClick="buttonUpdate"
-        android:text="@string/button_update" />
+        <Button
+            android:id="@+id/button_connect_bluetooth"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textSize="18dp"
+            android:onClick="@{fragment::buttonConnect}"
+            android:drawableStart="@drawable/ic_action_device_access_bluetooth_searching"
+            android:text="@string/button_connect_bluetooth" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/button_download"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textSize="18dp"
+            android:onClick="@{fragment::buttonDownload}"
+            android:text="@string/button_download" />
+
+        <Button
+            android:id="@+id/button_update"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:textSize="18dp"
+            android:onClick="@{fragment::buttonUpdate}"
+            android:text="@string/button_update" />
+
+    </LinearLayout>
+
+</layout>

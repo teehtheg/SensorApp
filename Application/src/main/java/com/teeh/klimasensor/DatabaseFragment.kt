@@ -16,7 +16,6 @@ import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.database.DatabaseService
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
@@ -67,7 +66,7 @@ class DatabaseFragment : Fragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_db_util, container, false)
+        return inflater.inflate(R.layout.fragment_database, container, false)
     }
 
     public override fun onStart() {
