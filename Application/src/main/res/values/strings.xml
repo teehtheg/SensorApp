@@ -58,6 +58,7 @@
     <string name="button_show_graph">Show Graph</string>
 
     <string name="download_empty">Nothing to download</string>
+    <string name="download_no_count">Could not get count</string>
     <string name="download_failed">Download failed</string>
     <string name="download_success">Download succeeded</string>
 

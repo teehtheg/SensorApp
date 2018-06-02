@@ -1,5 +1,6 @@
 package com.teeh.klimasensor
 
+import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -16,6 +17,8 @@ import com.teeh.klimasensor.common.exception.BusinessException
 import com.teeh.klimasensor.common.extension.bind
 import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.database.DatabaseService
+import com.teeh.klimasensor.databinding.FragmentDataSynchronizerBinding
+import com.teeh.klimasensor.databinding.FragmentDatabaseBinding
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 
@@ -66,7 +69,9 @@ class DatabaseFragment : Fragment() {
         }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_database, container, false)
+        val binding: FragmentDatabaseBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_database, container, false)
+        binding.fragment = this
+        return binding.root
     }
 
     public override fun onStart() {

@@ -1,16 +1,14 @@
 package com.teeh.klimasensor.rest
 
-import android.content.Context
 import android.text.TextUtils
-import com.teeh.klimasensor.common.config.ConfigService
-import com.teeh.klimasensor.rest.AuthenticationInterceptor
-
 import okhttp3.Credentials
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.SSLSession
 
-class ServiceGenerator(endpoint: String) {
+class ServiceGenerator(endpoint: String, teehTrustManager: SslSetupUtil) {
 
     val API_BASE_URL = endpoint
 
@@ -21,6 +19,8 @@ class ServiceGenerator(endpoint: String) {
             .addConverterFactory(GsonConverterFactory.create())
 
     private var retrofit = builder.build()
+
+    private val teehTrustManager = teehTrustManager
 
     fun <S> createService(serviceClass: Class<S>): S {
         return createService(serviceClass, null, null)
@@ -43,6 +43,8 @@ class ServiceGenerator(endpoint: String) {
 
             if (!httpClient.interceptors().contains(interceptor)) {
                 httpClient.addInterceptor(interceptor)
+                httpClient.sslSocketFactory(teehTrustManager.sslSocketFactory, teehTrustManager.x509TrustManager)
+                httpClient.hostnameVerifier(getHostnameVerifier())
 
                 builder.client(httpClient.build())
                 retrofit = builder.build()
@@ -50,5 +52,13 @@ class ServiceGenerator(endpoint: String) {
         }
 
         return retrofit.create(serviceClass)
+    }
+
+    fun getHostnameVerifier(): HostnameVerifier {
+        return object : HostnameVerifier {
+            override fun verify(hostname: String?, session: SSLSession?): Boolean {
+                return true
+            }
+        }
     }
 }

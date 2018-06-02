@@ -1,5 +1,6 @@
 package com.teeh.klimasensor
 
+import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -19,6 +20,8 @@ import java.util.HashMap
 import java.util.Locale
 
 import com.teeh.klimasensor.database.DatabaseService
+import com.teeh.klimasensor.databinding.FragmentDataAnalyzerBinding
+import com.teeh.klimasensor.databinding.FragmentDatabaseBinding
 import com.teeh.klimasensor.weather.CurrentWeather
 import com.teeh.klimasensor.weather.OutsideWeatherService
 import kotlinx.coroutines.experimental.android.UI
@@ -62,7 +65,9 @@ class DataAnalyzerFragment : Fragment() {
     private val typeDisplayMapping = HashMap<ValueType, List<TextView>>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_data_analyzer, container, false)
+        val binding: FragmentDataAnalyzerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_data_analyzer, container, false)
+        binding.fragment = this
+        return binding.root
     }
 
     public override fun onStart() {

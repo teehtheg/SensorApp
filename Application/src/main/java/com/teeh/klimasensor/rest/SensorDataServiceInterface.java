@@ -14,10 +14,16 @@ public interface SensorDataServiceInterface {
     @GET("status")
     Call<ServerStatus> getStatus();
 
-    @GET("sensordata")
-    Call<List<SensorData>> getSensorData();
+    @GET("sensordata/count")
+    Call<SensorDataCountResponse> getSensorDataCount();
 
-    @GET("sensordata/{fromTs}")
-    Call<List<SensorData>> getSensorDataFrom(@Path("fromTs") String fromTs);
+    @GET("sensordata/{pageNr}")
+    Call<SensorDataResponse> getSensorData(@Path("pageNr") Integer pageNr);
+
+    @GET("sensordatafrom/{fromTs}/count")
+    Call<SensorDataCountResponse> getSensorDataFromCount(@Path("fromTs") String fromTs);
+
+    @GET("sensordatafrom/{fromTs}/{pageNr}")
+    Call<SensorDataResponse> getSensorDataFrom(@Path("fromTs") String fromTs, @Path("pageNr") Integer pageNr);
 }
 

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.databinding.DataBindingUtil
+import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -24,12 +25,14 @@ import com.teeh.klimasensor.common.constants.Constants.REQUEST_CONNECT_DEVICE
 import com.teeh.klimasensor.common.constants.Constants.REQUEST_ENABLE_BT
 import com.teeh.klimasensor.common.utils.DateUtils
 import com.teeh.klimasensor.databinding.FragmentDataSynchronizerBinding
-import com.teeh.klimasensor.rest.SensorData
-import com.teeh.klimasensor.rest.SensorDataService
-import com.teeh.klimasensor.rest.ServerStatus
+import com.teeh.klimasensor.rest.*
+import com.teeh.klimasensor.rest.FetchType.DOWNLOAD_ALL
+import com.teeh.klimasensor.rest.FetchType.DOWNLOAD_FROM
+import kotlinx.coroutines.experimental.selects.select
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.roundToInt
 
 class DataSynchronizerFragment : Fragment() {
 
@@ -54,6 +57,10 @@ class DataSynchronizerFragment : Fragment() {
 
     private lateinit var progressBar: ProgressBar
     private lateinit var progressText: TextView
+
+    private var restDownloadCount: Int = 0
+
+    private val PAGE_SIZE: Int = 100
 
     /**
      * The Handler that gets information back from the BluetoothService
@@ -184,7 +191,7 @@ class DataSynchronizerFragment : Fragment() {
                     .show()
 
             mRestAdapter.getStatus(getStatusCallback(
-                    { mRestAdapter.getSensorData(getSensorDataCallback()) }
+                    { mRestAdapter.getSensorData(getSensorDataCallback(DOWNLOAD_ALL), 0) }
             ))
             return
         }
@@ -204,7 +211,10 @@ class DataSynchronizerFragment : Fragment() {
                     .show()
 
             mRestAdapter.getStatus(getStatusCallback(
-                    { mRestAdapter.getSensorDataFrom(getSensorDataCallback()) }
+                    {
+                        val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
+                        mRestAdapter.getSensorDataFromCount(getSensorDataCountCallback(DOWNLOAD_FROM), latestTs)
+                    }
             ))
             return
         }
@@ -280,6 +290,25 @@ class DataSynchronizerFragment : Fragment() {
         }
     }
 
+    fun displayProgressPercent(curPkg: Int?, totPkg: Int?) {
+        if (progressText.visibility != View.VISIBLE) {
+            progressText.visibility = View.VISIBLE
+            progressBar.visibility = View.VISIBLE
+            progressBar.max = 100
+        }
+
+        val percent = (curPkg?.toFloat()!!/totPkg?.toFloat()!! * 100).roundToInt()
+        val progress = percent.toString() + "%"
+        progressText.text = progress
+        progressBar.progress = percent
+
+        if (curPkg == totPkg) {
+            progressText.text = "complete!"
+            progressBar.visibility = View.INVISIBLE
+            progressText.visibility = View.INVISIBLE
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             REQUEST_CONNECT_DEVICE ->
@@ -322,18 +351,82 @@ class DataSynchronizerFragment : Fragment() {
         mBluetoothService!!.connect(device)
     }
 
-    fun getSensorDataCallback(): Callback<List<SensorData>> {
-        return object : Callback<List<SensorData>> {
-            override fun onResponse(call: Call<List<SensorData>>, response: Response<List<SensorData>>) {
+    fun getSensorDataCountCallback(type: FetchType): Callback<SensorDataCountResponse> {
+        return object : Callback<SensorDataCountResponse> {
+            override fun onResponse(call: Call<SensorDataCountResponse>, response: Response<SensorDataCountResponse>) {
                 if (response.isSuccessful) {
-                    if (!checkNotNull(response.body()).isEmpty()) {
-                        val update = response.body()!!
-                        TimeseriesService.instance.updateSensorTsAsync(update)
-                                .invokeOnCompletion {
+                    val count = response.body()?.count
+                    val numPagesFloat = (count?.toFloat()!! / PAGE_SIZE.toFloat())
+                    restDownloadCount = numPagesFloat.roundToInt()
+
+                    if (numPagesFloat > restDownloadCount) {
+                        restDownloadCount = restDownloadCount + 1
+                    }
+
+                    if (restDownloadCount >= 0) {
+                        if (restDownloadCount == 0) {
                             Snackbar.make(activity!!.findViewById(android.R.id.content),
-                                    update.size.toString() + " records downloaded",
+                                    R.string.download_empty,
                                     Snackbar.LENGTH_SHORT)
                                     .show()
+                            return
+                        }
+
+                        when(type) {
+                            DOWNLOAD_ALL -> {
+                                mRestAdapter.getSensorData(getSensorDataCallback(type), 0)
+                            }
+                            DOWNLOAD_FROM -> {
+                                val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
+                                mRestAdapter.getSensorDataFrom(getSensorDataCallback(type), latestTs, 0)
+                            }
+                        }
+
+                    } else {
+                        Snackbar.make(activity!!.findViewById(android.R.id.content),
+                                R.string.download_no_count,
+                                Snackbar.LENGTH_SHORT)
+                                .show()
+                    }
+                } else {
+                    Log.e(DataSynchronizerFragment.TAG, "An error occured: " + response.errorBody())
+                }
+                return
+            }
+
+            override fun onFailure(call: Call<SensorDataCountResponse>, t: Throwable) {
+                Log.e(DataSynchronizerFragment.TAG, "Failure: " + t.message)
+            }
+        }
+    }
+
+    fun getSensorDataCallback(type: FetchType): Callback<SensorDataResponse> {
+        return object : Callback<SensorDataResponse> {
+            override fun onResponse(call: Call<SensorDataResponse>, response: Response<SensorDataResponse>) {
+                if (response.isSuccessful) {
+                    if (!checkNotNull(response.body()).isEmpty()) {
+                        val body = response.body()!!
+                        Log.i(TAG, "body.next: " + body.next!! + ", count: " + restDownloadCount)
+                        displayProgressPercent( body.next!!, restDownloadCount)
+                        TimeseriesService.instance.updateSensorTsAsync(body.data!!)
+                                .invokeOnCompletion {
+                                    if (!body.isLast()) {
+                                        when(type) {
+                                            DOWNLOAD_ALL -> {
+                                                mRestAdapter.getSensorData(getSensorDataCallback(type), body.next!!)
+                                            }
+                                            DOWNLOAD_FROM -> {
+                                                val latestTs = DateUtils.toString(TimeseriesService.instance.readLastFromDB().timestamp)
+                                                mRestAdapter.getSensorDataFrom(getSensorDataCallback(type), latestTs, body.next!!)
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        Snackbar.make(activity!!.findViewById(android.R.id.content),
+                                                "Download finished",
+                                                Snackbar.LENGTH_SHORT)
+                                                .show()
+                                    }
                         }
                     } else {
                         Snackbar.make(activity!!.findViewById(android.R.id.content),
@@ -347,7 +440,7 @@ class DataSynchronizerFragment : Fragment() {
                 return
             }
 
-            override fun onFailure(call: Call<List<SensorData>>, t: Throwable) {
+            override fun onFailure(call: Call<SensorDataResponse>, t: Throwable) {
                 Log.e(DataSynchronizerFragment.TAG, "Failure: " + t.message)
             }
         }
